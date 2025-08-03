@@ -21,31 +21,26 @@
     <style>
         body {
             font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
-            background-color: #F0F4F8; /* A lighter, softer background */
+            background-color: #0F172A; /* slate-900 */
+            color: #E2E8F0; /* slate-200 */
         }
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.5s; }
         .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         .modal-content { transition: transform 0.3s ease-out; }
-        
         input[type="range"] {
             -webkit-appearance: none; appearance: none;
-            width: 100%; height: 10px;
+            width: 100%; height: 10px; background: #334155; /* slate-700 */
             border-radius: 5px; outline: none; transition: background 0.3s ease;
-            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none;
             width: 24px; height: 24px; background: #fff; cursor: pointer;
-            border-radius: 50%; border: 4px solid #4f46e5; /* indigo-600 */
-            box-shadow: 0 0 8px rgba(0,0,0, 0.2);
+            border-radius: 50%; border: 5px solid #38BDF8; /* lightBlue-400 */
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.5); transition: border-color 0.3s ease;
         }
-
         .icon-button, .tag-button { 
             transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-            background-color: #F3F4F6; /* gray-100 */
-            border: 1px solid #E5E7EB; /* gray-200 */
-            color: #374151; /* gray-700 */
+            background-color: #1E293B; /* slate-800 */
+            border: 1px solid #334155; /* slate-700 */
         }
         .icon-button.selected, .tag-button.selected { 
             background-color: #6366F1 !important; /* indigo-500 */
@@ -54,107 +49,110 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .step-content { display: none; animation: fadeIn 0.5s; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .calendar-day { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 9999px; font-size: 0.8rem; }
-        .calendar-day.other-month { color: #9CA3AF; }
-        .calendar-day.today { font-weight: bold; border: 2px solid #6366F1; }
-        .calendar-day.intensity-mild { background-color: #A7F3D0; color: #047857; }
-        .calendar-day.intensity-moderate { background-color: #FEF08A; color: #A16207; }
-        .calendar-day.intensity-severe { background-color: #FECACA; color: #991B1B; }
+        .calendar-day { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 9999px; font-size: 0.8rem; background-color: transparent; }
+        .calendar-day.other-month { color: #475569; }
+        .calendar-day.today { font-weight: bold; border: 2px solid #38BDF8; }
+        .calendar-day.intensity-mild { background-color: #166534; color: #a7f3d0; }
+        .calendar-day.intensity-moderate { background-color: #a16207; color: #fef08a; }
+        .calendar-day.intensity-severe { background-color: #991b1b; color: #fecaca; }
 
         .head-diagram-container { position: relative; width: 150px; height: 150px; margin: auto; }
         .head-diagram-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
         .head-diagram-svg.active { display: block; }
-        .head-outline { fill: #E5E7EB; stroke: #9CA3AF; stroke-width: 1.5; }
+        .head-outline { fill: #475569; stroke: #64748B; stroke-width: 1.5; }
         .pain-marker { cursor: pointer; transition: opacity 0.2s ease; }
         .pain-marker:hover { opacity: 0.7; }
-        .view-switcher-btn { background-color: #E5E7EB; color: #4B5563; }
+        .view-switcher-btn { background-color: #334155; color: #94A3B8; }
         .view-switcher-btn.active { background-color: #6366F1; color: white; }
-        .nav-btn { color: #4B5563; }
-        .nav-btn.active { color: #4F46E5; font-weight: 600; border-bottom: 2px solid #4F46E5;}
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="antialiased">
 
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-sm shadow-sm border-b sticky top-0 z-30">
-        <div class="max-w-4xl mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <h1 class="text-xl font-bold text-gray-800">🧠 Migraine Tracker</h1>
-                <div id="nav-buttons" class="flex space-x-2">
-                    <button data-view="dashboard" class="nav-btn active px-3 py-2 text-sm font-medium transition-colors">Dashboard</button>
-                    <button data-view="analytics" class="nav-btn px-3 py-2 text-sm font-medium transition-colors">Analytics</button>
-                    <button data-view="settings" class="nav-btn px-3 py-2 text-sm font-medium transition-colors">Settings</button>
+    <div class="container mx-auto p-4 md:p-6 max-w-2xl">
+        
+        <header class="flex flex-wrap justify-between items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-white" data-lang="module_title">Migraine Tracker</h1>
+                <p class="text-slate-400" data-lang="module_subtitle">Log symptoms, gain insights, and share reports.</p>
+            </div>
+            <div class="flex items-center space-x-2 bg-slate-800 p-1 rounded-full border border-slate-700 shadow-sm">
+                <button id="lang-en" class="px-3 py-1 text-sm font-semibold rounded-full bg-indigo-500 text-white">EN</button>
+                <button id="lang-hi" class="px-3 py-1 text-sm font-semibold rounded-full text-slate-300">HI</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Welcome & Attack Free Counter -->
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-2xl mb-8 border border-slate-700 shadow-lg">
+                <div class="flex items-center gap-6">
+                    <div class="flex-shrink-0">
+                        <svg id="welcome-illustration" class="w-32 h-32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M152.5 163.5C152.5 142.22 128.038 126 99.5 126C70.9624 126 46.5 142.22 46.5 163.5" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M129 104C129 113.39 115.39 121 100 121C84.6101 121 71 113.39 71 104C71 94.6101 84.6101 87 100 87C115.39 87 129 94.6101 129 104Z" fill="#E2E8F0"/>
+                            <path d="M129 104C129 113.39 115.39 121 100 121C84.6101 121 71 113.39 71 104" stroke="#475569" stroke-width="3"/>
+                            <path d="M136.5 98.5C148.5 86.5 137 54.5 113.5 60.5C90 66.5 84 88 84 88" stroke="#6366F1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M63.5 98.5C51.5 86.5 63 54.5 86.5 60.5C110 66.5 116 88 116 88" stroke="#6366F1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div id="attack-free-card" class="text-left flex-grow">
+                        <!-- Content will be injected by JS -->
+                    </div>
                 </div>
+                 <button id="log-headache-btn" class="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform transform hover:scale-105" data-lang="log_headache_btn">
+                    + Log a Headache
+                 </button>
             </div>
-        </div>
-    </nav>
-
-    <!-- Dashboard View -->
-    <div id="dashboard" class="view active max-w-4xl mx-auto p-4">
-        <!-- Hero Section -->
-        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
-            <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-            <div class="relative z-10">
-                <div id="hero-content">
-                    <!-- Hero content injected by JS -->
-                </div>
-                <div class="flex flex-wrap gap-3 mt-6">
-                    <button id="hero-log-headache-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center">
-                        <span class="mr-2">⚡</span> Log Headache
-                    </button>
-                    <button id="hero-view-analytics-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center">
-                        <span class="mr-2">📊</span> View Analytics
-                    </button>
-                    <button id="hero-generate-report-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center">
-                        <span class="mr-2">📋</span> Doctor Report
-                    </button>
-                </div>
+            
+            <div id="report-content">
+                <section id="insights-section" class="mb-12">
+                    <h3 class="text-xl font-bold text-white mb-4" data-lang="insights_title">My Insights</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div id="calendar-container" class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-4">
+                                <button id="prev-month-btn" class="p-2 rounded-full hover:bg-slate-700">&lt;</button>
+                                <h4 id="calendar-month-year" class="font-bold text-lg text-white"></h4>
+                                <button id="next-month-btn" class="p-2 rounded-full hover:bg-slate-700">&gt;</button>
+                            </div>
+                            <div class="grid grid-cols-7 text-center text-xs font-semibold text-slate-400 mb-2">
+                                <div data-lang="day_sun">S</div><div data-lang="day_mon">M</div><div data-lang="day_tue">T</div><div data-lang="day_wed">W</div><div data-lang="day_thu">T</div><div data-lang="day_fri">F</div><div data-lang="day_sat">S</div>
+                            </div>
+                            <div id="calendar-grid" class="calendar-grid"></div>
+                        </div>
+                        <div id="stats-container" class="grid grid-cols-2 gap-4 content-start">
+                        </div>
+                    </div>
+                </section>
+                
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-white" data-lang="recent_logs_title">Recent Logs</h3>
+                        <button id="generate-report-btn" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2 px-3 text-sm border border-slate-600 rounded-lg shadow-sm transition">
+                            <span data-lang="generate_report_btn">Generate Report</span>
+                        </button>
+                    </div>
+                    <div id="logs-container" class="space-y-4">
+                         <div class="bg-slate-800 text-center p-12 rounded-2xl border-2 border-dashed border-slate-700">
+                            <p class="text-slate-400" data-lang="no_logs_msg">Your logged headaches will appear here.</p>
+                        </div>
+                    </div>
+                </section>
             </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div id="stats-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Stats injected by JS -->
-        </div>
-
-        <!-- Recent Entries -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-100">
-            <div class="p-6 border-b border-gray-100">
-                <h2 class="text-lg font-semibold text-gray-800">Recent Entries</h2>
-                <p class="text-sm text-gray-500">Your latest migraine logs and patterns</p>
-            </div>
-            <div class="divide-y divide-gray-100" id="logs-container">
-                <!-- Recent entries will be populated here -->
-            </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Analytics View -->
-    <div id="analytics" class="view max-w-4xl mx-auto p-4">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Analytics & Insights</h2>
-        <div class="bg-white rounded-lg p-6 shadow-sm mb-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">📅 My Migraine Calendar</h3>
-            <div id="analytics-calendar-container">
-                <!-- Calendar will be populated here -->
-            </div>
-        </div>
-        <!-- More analytics can go here -->
-    </div>
-
-    <!-- Settings View -->
-    <div id="settings" class="view max-w-4xl mx-auto p-4">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-            <p class="text-gray-600">Settings page is under construction. You will soon be able to manage medications and triggers here.</p>
-        </div>
-    </div>
+    <!-- Floating Action Button -->
+    <button id="log-headache-fab" class="fixed bottom-6 right-6 bg-indigo-500 hover:bg-indigo-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110 z-40">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+    </button>
 
     <!-- Modal for Logging -->
     <div id="log-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 invisible opacity-0">
-        <div id="modal-content" class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl transform scale-95 max-h-[90vh] overflow-y-auto">
+        <div id="modal-content" class="modal-content bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl transform scale-95 max-h-[90vh] overflow-y-auto border border-slate-700">
             <!-- Content dynamically injected by JS -->
         </div>
     </div>
@@ -164,7 +162,7 @@
             // --- LANGUAGE & STATIC DATA ---
             const langData = {
                 en: {
-                    welcome_message: "Welcome back!",
+                    welcome_message: "Hello!",
                     attack_free_subtitle: "You have been",
                     attack_free_title: "attack-free",
                     attack_free_days: (d) => d === 1 ? `1 day` : `${d} days`,
@@ -179,7 +177,7 @@
                     step6_title: "Treatment", medication_label: "Medication Taken", relief_label: "Relief Measures",
                     back_btn: "Back", next_btn: "Next", save_btn: "Save Log", update_btn: "Update Log", yes: "Yes", no: "No",
                     custom_trigger_placeholder: "Or add a custom trigger...", custom_medication_placeholder: "Or add a custom medication...",
-                    insights_common_trigger: "Top Trigger", insights_avg_duration: "Avg. Duration", insights_avg_intensity: "Avg. Intensity", insights_total_logs: "Total Attacks", insights_none: "Not enough data",
+                    insights_common_trigger: "Common Trigger", insights_avg_duration: "Avg. Duration", insights_avg_intensity: "Avg. Intensity", insights_total_logs: "Total Attacks", insights_none: "Not enough data",
                     day_sun: "S", day_mon: "M", day_tue: "T", day_wed: "W", day_thu: "T", day_fri: "F", day_sat: "S",
                     delete_confirm_title: "Are you sure?", delete_confirm_text: "This action cannot be undone.", delete_btn: "Delete", cancel_btn: "Cancel",
                     duration_label: "Duration",
@@ -390,24 +388,21 @@
             };
 
             const renderAll = () => {
-                renderHeroCard();
-                renderStats();
+                renderAttackFreeCard();
                 renderLogs();
-                const activeView = document.querySelector('.nav-btn.active').dataset.view;
-                if (activeView === 'analytics') {
-                    renderCalendar('analytics-calendar-container');
-                }
+                updateInsights();
+                renderCalendar();
             };
 
-            const renderHeroCard = () => {
-                const card = document.getElementById('hero-content');
+            const renderAttackFreeCard = () => {
+                const card = document.getElementById('attack-free-card');
                 const sortedLogs = [...logs].sort((a,b) => new Date(b.startTime) - new Date(a.startTime));
                 let days = 0;
                 
                 if (logs.length === 0) {
                      card.innerHTML = `
-                        <h1 class="text-3xl md:text-4xl font-bold mb-2">${langData[currentLang].welcome_message} 👋</h1>
-                        <p class="text-lg text-indigo-100 mb-4">${langData[currentLang].main_card_subtitle}</p>
+                        <p class="text-xl text-slate-300" data-lang="welcome_message">${langData[currentLang].welcome_message}</p>
+                        <p class="text-slate-400 mt-2" data-lang="main_card_subtitle">${langData[currentLang].main_card_subtitle}</p>
                     `;
                     return;
                 }
@@ -418,86 +413,77 @@
                 lastAttack.setHours(0,0,0,0);
                 
                 days = Math.floor((today - lastAttack) / (1000 * 60 * 60 * 24));
-                if (days < 0) days = 0;
+                if (days < 0) days = 0; // Handle case where log is in the future for testing
 
                 card.innerHTML = `
-                    <h1 class="text-3xl md:text-4xl font-bold mb-2">${langData[currentLang].welcome_message}</h1>
-                    <p class="text-lg text-indigo-100 mb-4">${langData[currentLang].attack_free_subtitle} 
-                        <span class="font-bold text-white">${days} ${langData[currentLang].attack_free_days(days).replace(/[0-9]/g, '')}</span> 
-                    ${langData[currentLang].attack_free_title}.</p>
+                    <p class="text-xl text-slate-300" data-lang="welcome_message">${langData[currentLang].welcome_message}</p>
+                    <p class="text-slate-400 mt-2" data-lang="attack_free_subtitle">${langData[currentLang].attack_free_subtitle}</p>
+                    <div class="flex items-baseline justify-start gap-2 my-1">
+                        <span class="text-6xl font-extrabold text-white">${days}</span>
+                        <span class="text-2xl text-slate-300" data-lang="attack_free_days">${langData[currentLang].attack_free_days(days)}</span>
+                    </div>
+                    <p class="text-slate-400" data-lang="attack_free_title">${langData[currentLang].attack_free_title}</p>
                 `;
             };
 
             const renderLogs = () => {
                 const container = document.getElementById('logs-container');
                 if (logs.length === 0) {
-                    container.innerHTML = `<div class="p-6 text-center text-gray-500">${langData[currentLang].no_logs_msg}</div>`;
+                    container.innerHTML = `<div class="bg-slate-800 text-center p-12 rounded-2xl border-2 border-dashed border-slate-700"><p class="text-slate-400" data-lang="no_logs_msg">${langData[currentLang].no_logs_msg}</p></div>`;
                     return;
                 }
                 container.innerHTML = '';
                 [...logs].sort((a, b) => new Date(b.startTime) - new Date(a.startTime)).forEach(data => {
                     const card = document.createElement('div');
-                    card.className = 'p-4 hover:bg-gray-50';
+                    card.className = 'bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700';
                     const date = new Date(data.startTime);
-                    const formattedDate = date.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { month: 'short', day: 'numeric' });
+                    const formattedDate = date.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { weekday: 'long', month: 'short', day: 'numeric' });
                     const formattedTime = date.toLocaleTimeString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
                     const intensity = parseInt(data.painIntensity);
-                    let intensityColor = intensity > 7 ? 'bg-red-500' : intensity > 4 ? 'bg-yellow-500' : 'bg-green-500';
+                    let intensityColor = intensity > 7 ? '#F87171' : intensity > 4 ? '#FACC15' : '#4ADE80';
+                    let intensityTextColor = intensity > 7 ? 'text-red-400' : intensity > 4 ? 'text-yellow-400' : 'text-green-400';
+                    let durationStr = 'Still ongoing';
+                    if (data.endTime) {
+                        const durationMs = new Date(data.endTime) - new Date(data.startTime);
+                        if (durationMs > 0) {
+                            const hours = Math.floor(durationMs / 3600000);
+                            const minutes = Math.round((durationMs % 3600000) / 60000);
+                            durationStr = `${hours}h ${minutes}m`;
+                        }
+                    }
+                    
+                    const miniHead = `<div class="head-diagram-container !w-20 !h-20 flex-shrink-0"><svg class="head-diagram-svg active" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path>${(data.painLocation || []).map(m => `<circle class="pain-marker" cx="${m.x}" cy="${m.y}" r="6" fill="${intensityColor}" fill-opacity="0.8" stroke="white" stroke-width="1.5"></circle>`).join('')}</svg></div>`;
 
                     card.innerHTML = `
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-white">${formattedDate} at ${formattedTime}</div>
+                            </div>
                             <div class="flex items-center gap-4">
-                                <div class="flex-shrink-0 w-12 h-12 rounded-lg ${intensityColor} flex flex-col items-center justify-center text-white font-bold">
-                                    <span class="text-lg">${intensity}</span>
-                                    <span class="text-xs opacity-80">/10</span>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800">${formattedDate} at ${formattedTime}</p>
-                                    <p class="text-sm text-gray-500">${data.triggers.join(', ') || 'No triggers logged'}</p>
+                                <div class="flex flex-col gap-2">
+                                    <button class="edit-btn text-slate-400 hover:text-indigo-400" data-id="${data.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
+                                    <button class="delete-btn text-slate-400 hover:text-red-500" data-id="${data.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg></button>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button class="edit-btn text-gray-400 hover:text-indigo-600" data-id="${data.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
-                                <button class="delete-btn text-gray-400 hover:text-red-600" data-id="${data.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg></button>
-                            </div>
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-4 text-center">
+                            <div class="text-left">${miniHead}</div>
+                            <div><div class="text-xs text-slate-400">${langData[currentLang].intensity_label}</div><div class="text-lg font-bold text-white ${intensityTextColor}">${intensity}/10</div></div>
+                            <div><div class="text-xs text-slate-400">${langData[currentLang].duration_label}</div><div class="text-lg font-bold text-white">${durationStr}</div></div>
+                        </div>
+                        <div class="mt-4 text-xs text-slate-300 space-y-2">
+                            ${data.triggers.length > 0 ? `<div class="flex gap-2 items-center"><strong class="text-slate-400 w-20 flex-shrink-0">${langData[currentLang].triggers_label}:</strong> <span class="truncate">${data.triggers.join(', ')}</span></div>` : ''}
+                            ${data.medications.length > 0 ? `<div class="flex gap-2 items-center"><strong class="text-slate-400 w-20 flex-shrink-0">${langData[currentLang].medication_label}:</strong> <span class="truncate">${data.medications.join(', ')}</span></div>` : ''}
                         </div>
                     `;
                     container.appendChild(card);
                 });
             };
             
-            const renderCalendar = (containerId) => {
-                const container = document.getElementById(containerId);
-                container.innerHTML = ''; // Clear previous calendar
-                const calendarWrapper = document.createElement('div');
-
-                const header = document.createElement('div');
-                header.className = 'flex justify-between items-center mb-4';
-                header.innerHTML = `
-                    <button id="cal-prev-month-btn" class="p-2 rounded-full hover:bg-gray-100">&lt;</button>
-                    <h4 id="cal-month-year" class="font-bold text-lg text-gray-800"></h4>
-                    <button id="cal-next-month-btn" class="p-2 rounded-full hover:bg-gray-100">&gt;</button>
-                `;
-                calendarWrapper.appendChild(header);
-
-                const dayHeaders = document.createElement('div');
-                dayHeaders.className = 'grid grid-cols-7 text-center text-xs font-semibold text-gray-500 mb-2';
-                dayHeaders.innerHTML = `
-                    <div data-lang="day_sun">S</div><div data-lang="day_mon">M</div><div data-lang="day_tue">T</div><div data-lang="day_wed">W</div><div data-lang="day_thu">T</div><div data-lang="day_fri">F</div><div data-lang="day_sat">S</div>
-                `;
-                calendarWrapper.appendChild(dayHeaders);
-
-                const grid = document.createElement('div');
-                grid.id = 'calendar-grid-dynamic';
-                grid.className = 'calendar-grid';
-                calendarWrapper.appendChild(grid);
-                container.appendChild(calendarWrapper);
-
-                // Add event listeners for new buttons
-                document.getElementById('cal-prev-month-btn').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(containerId); });
-                document.getElementById('cal-next-month-btn').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(containerId); });
-
-                const monthYearEl = document.getElementById('cal-month-year');
+            const renderCalendar = () => {
+                const grid = document.getElementById('calendar-grid');
+                const monthYearEl = document.getElementById('calendar-month-year');
+                grid.innerHTML = '';
                 monthYearEl.textContent = calendarDate.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { month: 'long', year: 'numeric' });
                 const year = calendarDate.getFullYear();
                 const month = calendarDate.getMonth();
@@ -526,12 +512,13 @@
                 }
             };
 
-            const renderStats = () => {
+            const updateInsights = () => {
                 const container = document.getElementById('stats-container');
                 if (logs.length < 1) {
-                    container.innerHTML = `<div class="bg-white rounded-xl p-6 shadow-lg border text-center md:col-span-3"><p class="text-gray-500">No stats to show yet. Log a headache to get started!</p></div>`;
+                    document.getElementById('insights-section').style.display = 'none';
                     return;
                 }
+                document.getElementById('insights-section').style.display = 'block';
                 const getMostCommon = (field) => {
                     if (logs.length === 0) return langData[currentLang].insights_none;
                     const counts = logs.flatMap(log => log[field]).reduce((acc, val) => { acc[val] = (acc[val] || 0) + 1; return acc; }, {});
@@ -542,22 +529,25 @@
                     if (logs.length === 0) return 'N/A';
                     return (logs.reduce((sum, log) => sum + parseInt(log.painIntensity), 0) / logs.length).toFixed(1);
                 };
+                const getAverageDuration = () => {
+                    const logsWithDuration = logs.filter(l => l.endTime);
+                    if (logsWithDuration.length === 0) return 'N/A';
+                    const totalMs = logsWithDuration.reduce((sum, log) => sum + (new Date(log.endTime) - new Date(log.startTime)), 0);
+                    const avgMs = totalMs / logsWithDuration.length;
+                    const hours = Math.floor(avgMs / 3600000);
+                    const minutes = Math.round((avgMs % 3600000) / 60000);
+                    return `${hours}h ${minutes}m`;
+                };
                 const insights = [
-                    { titleKey: "insights_total_logs", value: logs.length, icon: '⚡' },
-                    { titleKey: "insights_avg_intensity", value: getAverageIntensity(), icon: '📊' },
-                    { titleKey: "insights_common_trigger", value: getMostCommon('triggers'), icon: '🎯' }
+                    { titleKey: "insights_total_logs", value: logs.length },
+                    { titleKey: "insights_avg_intensity", value: getAverageIntensity() },
+                    { titleKey: "insights_common_trigger", value: getMostCommon('triggers') },
+                    { titleKey: "insights_avg_duration", value: getAverageDuration() }
                 ];
                 container.innerHTML = insights.map(insight => `
-                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-200">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600 mb-1">${langData[currentLang][insight.titleKey]}</p>
-                                <p class="text-3xl font-bold text-gray-800">${insight.value}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-                                <span class="text-white text-xl">${insight.icon}</span>
-                            </div>
-                        </div>
+                    <div class="bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-700 text-center">
+                        <h4 class="text-sm font-semibold text-slate-400">${langData[currentLang][insight.titleKey]}</h4>
+                        <p class="text-2xl font-bold text-white mt-1">${insight.value}</p>
                     </div>
                 `).join('');
             };
@@ -587,34 +577,19 @@
                     body: tableData,
                     startY: doc.previousAutoTable ? doc.previousAutoTable.finalY + 20 : 40,
                     theme: 'grid',
-                    headStyles: { fillColor: [79, 70, 229] }, // indigo-600
+                    headStyles: { fillColor: [71, 85, 105] }, // slate-600
                 });
                 doc.save('migraine-report.pdf');
-            };
-
-            const showView = (viewName) => {
-                document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-                document.getElementById(viewName).classList.add('active');
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.view === viewName);
-                });
-                if (viewName === 'analytics') {
-                    renderCalendar('analytics-calendar-container');
-                }
             };
 
             // --- EVENT LISTENERS ---
             document.getElementById('lang-en').addEventListener('click', () => switchLanguage('en'));
             document.getElementById('lang-hi').addEventListener('click', () => switchLanguage('hi'));
-            document.getElementById('hero-log-headache-btn').addEventListener('click', () => openModal());
-            document.getElementById('hero-view-analytics-btn').addEventListener('click', () => showView('analytics'));
-            document.getElementById('hero-generate-report-btn').addEventListener('click', generatePDF);
-            
-            document.getElementById('nav-buttons').addEventListener('click', (e) => {
-                if(e.target.matches('.nav-btn')) {
-                    showView(e.target.dataset.view);
-                }
-            });
+            document.getElementById('log-headache-btn').addEventListener('click', () => openModal());
+            document.getElementById('log-headache-fab').addEventListener('click', () => openModal());
+            document.getElementById('generate-report-btn').addEventListener('click', generatePDF);
+            document.getElementById('prev-month-btn').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); });
+            document.getElementById('next-month-btn').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); });
             
             document.querySelector('body').addEventListener('click', (e) => {
                 const editBtn = e.target.closest('.edit-btn');
@@ -628,7 +603,7 @@
                 setInterval(() => {
                     const currentDay = new Date().getDate();
                     if (currentDay !== lastRenderedDay) {
-                        renderHeroCard();
+                        renderAttackFreeCard();
                         lastRenderedDay = currentDay;
                     }
                 }, 60000); // Check every minute
@@ -687,7 +662,7 @@
                         const isSelected = selectedValues.includes(enValue);
                         const iconKey = enValue.toLowerCase().replace(/\s+/g, '');
                         return `<button class="icon-button ${isSelected ? 'selected' : ''} flex flex-col items-center justify-center gap-2 p-3 rounded-lg flex-1" data-value="${enValue}">
-                                    <span class="text-indigo-500">${iconData[iconKey]}</span>
+                                    <span class="text-indigo-400">${iconData[iconKey]}</span>
                                     <span class="text-xs text-center">${item}</span>
                                 </button>`;
                     }).join('');
@@ -697,7 +672,7 @@
                     return tagData[key][currentLang].map(item => {
                         const enValue = tagData[key].en[tagData[key][currentLang].indexOf(item)];
                         const isSelected = selectedValues.includes(enValue);
-                        return `<button class="tag-button ${isSelected ? 'selected' : ''} py-2 px-4 text-sm font-medium" data-value="${enValue}">${item}</button>`;
+                        return `<button class="tag-button ${isSelected ? 'selected' : ''} border border-slate-600 rounded-lg py-2 px-4 text-sm font-medium hover:bg-slate-600" data-value="${enValue}">${item}</button>`;
                     }).join('');
                 };
 
@@ -705,23 +680,23 @@
                     <div class="p-6 md:p-8">
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                <h2 class="text-xl font-bold text-gray-800" data-lang="${log ? 'modal_title_edit' : 'modal_title_new'}">${langData[currentLang][log ? 'modal_title_edit' : 'modal_title_new']}</h2>
-                                <p class="text-sm text-gray-500" data-lang="modal_subtitle">${langData[currentLang].modal_subtitle}</p>
+                                <h2 class="text-xl font-bold text-white" data-lang="${log ? 'modal_title_edit' : 'modal_title_new'}">${langData[currentLang][log ? 'modal_title_edit' : 'modal_title_new']}</h2>
+                                <p class="text-sm text-slate-400" data-lang="modal_subtitle">${langData[currentLang].modal_subtitle}</p>
                             </div>
-                            <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+                            <button id="close-modal-btn" class="text-slate-400 hover:text-white text-3xl leading-none">&times;</button>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5 mb-6"><div id="progress-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style="width: ${100/totalSteps}%"></div></div>
+                        <div class="w-full bg-slate-700 rounded-full h-1.5 mb-6"><div id="progress-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style="width: ${100/totalSteps}%"></div></div>
                         
-                        <div id="step-1" class="step-content active"><h3 class="font-semibold text-lg mb-4" data-lang="step1_title">${langData[currentLang].step1_title}</h3><div class="space-y-6"><div><label class="flex justify-between text-sm font-medium"><span data-lang="intensity_label">${langData[currentLang].intensity_label}</span><span id="intensity-value" class="font-bold text-indigo-600">${log?.painIntensity || 5}</span></label><input type="range" id="pain-intensity" min="1" max="10" value="${log?.painIntensity || 5}"></div><div><label class="block text-sm font-medium" data-lang="start_time_label">${langData[currentLang].start_time_label}</label><input type="datetime-local" id="start-time" class="w-full p-2 border border-gray-300 rounded-lg" value="${toISODateString(log?.startTime) || toISODateString(new Date())}"></div><div><label class="block text-sm font-medium" data-lang="end_time_label">${langData[currentLang].end_time_label}</label><input type="datetime-local" id="end-time" class="w-full p-2 border border-gray-300 rounded-lg" value="${toISODateString(log?.endTime)}"></div></div></div>
-                        <div id="step-2" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step2_title">${langData[currentLang].step2_title}</h3><div class="grid md:grid-cols-2 gap-6"><div class="text-center"><div class="view-switcher flex justify-center gap-1 mb-2 rounded-lg p-1 bg-gray-200"><button class="view-switcher-btn active flex-1 py-1 px-2 text-xs rounded-md" data-view="front" data-lang="view_front">${langData[currentLang].view_front}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="left" data-lang="view_left">${langData[currentLang].view_left}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="right" data-lang="view_right">${langData[currentLang].view_right}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="back" data-lang="view_back">${langData[currentLang].view_back}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="top" data-lang="view_top">${langData[currentLang].view_top}</button></div><div class="head-diagram-container"><svg id="head-front" class="head-diagram-svg active" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path></svg><svg id="head-left" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 50 10 C 85 10, 85 60, 65 80 C 60 95, 25 90, 25 70 C 25 40, 50 10, 50 10 Z"></path></svg><svg id="head-right" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 50 10 C 15 10, 15 60, 35 80 C 40 95, 75 90, 75 70 C 75 40, 50 10, 50 10 Z"></path></svg><svg id="head-back" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path></svg><svg id="head-top" class="head-diagram-svg" viewBox="0 0 100 100"><ellipse class="head-outline" cx="50" cy="50" rx="35" ry="45"></ellipse></svg></div></div><div><label class="block text-sm font-medium mb-2" data-lang="character_label">${langData[currentLang].character_label}</label><div id="pain-character-tags" class="grid grid-cols-2 gap-2">${getIconButton('painCharacter', log?.painCharacter)}</div></div></div></div>
+                        <div id="step-1" class="step-content active"><h3 class="font-semibold text-lg mb-4" data-lang="step1_title">${langData[currentLang].step1_title}</h3><div class="space-y-6"><div><label class="flex justify-between text-sm font-medium"><span data-lang="intensity_label">${langData[currentLang].intensity_label}</span><span id="intensity-value" class="font-bold text-lightBlue-400">${log?.painIntensity || 5}</span></label><input type="range" id="pain-intensity" min="1" max="10" value="${log?.painIntensity || 5}"></div><div><label class="block text-sm font-medium" data-lang="start_time_label">${langData[currentLang].start_time_label}</label><input type="datetime-local" id="start-time" class="w-full p-2 border bg-slate-700 border-slate-600 rounded-lg" value="${toISODateString(log?.startTime) || toISODateString(new Date())}"></div><div><label class="block text-sm font-medium" data-lang="end_time_label">${langData[currentLang].end_time_label}</label><input type="datetime-local" id="end-time" class="w-full p-2 border bg-slate-700 border-slate-600 rounded-lg" value="${toISODateString(log?.endTime)}"></div></div></div>
+                        <div id="step-2" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step2_title">${langData[currentLang].step2_title}</h3><div class="grid md:grid-cols-2 gap-6"><div class="text-center"><div class="view-switcher flex justify-center gap-1 mb-2 rounded-lg p-1 bg-slate-700"><button class="view-switcher-btn active flex-1 py-1 px-2 text-xs rounded-md" data-view="front" data-lang="view_front">${langData[currentLang].view_front}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="left" data-lang="view_left">${langData[currentLang].view_left}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="right" data-lang="view_right">${langData[currentLang].view_right}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="back" data-lang="view_back">${langData[currentLang].view_back}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="top" data-lang="view_top">${langData[currentLang].view_top}</button></div><div class="head-diagram-container"><svg id="head-front" class="head-diagram-svg active" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path></svg><svg id="head-left" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 50 10 C 85 10, 85 60, 65 80 C 60 95, 25 90, 25 70 C 25 40, 50 10, 50 10 Z"></path></svg><svg id="head-right" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 50 10 C 15 10, 15 60, 35 80 C 40 95, 75 90, 75 70 C 75 40, 50 10, 50 10 Z"></path></svg><svg id="head-back" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path></svg><svg id="head-top" class="head-diagram-svg" viewBox="0 0 100 100"><ellipse class="head-outline" cx="50" cy="50" rx="35" ry="45"></ellipse></svg></div></div><div><label class="block text-sm font-medium mb-2" data-lang="character_label">${langData[currentLang].character_label}</label><div id="pain-character-tags" class="grid grid-cols-2 gap-2">${getIconButton('painCharacter', log?.painCharacter)}</div></div></div></div>
                         <div id="step-3" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step3_title">${langData[currentLang].step3_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="aura_label">${langData[currentLang].aura_label}</label><div class="flex gap-4 single-select"><button class="tag-button flex-1" data-value="yes" data-lang="yes">${langData[currentLang].yes}</button><button class="tag-button flex-1" data-value="no" data-lang="no">${langData[currentLang].no}</button></div></div><div><label class="block text-sm font-medium mb-2" data-lang="symptoms_label">${langData[currentLang].symptoms_label}</label><div id="associated-symptoms-tags" class="grid grid-cols-2 gap-2">${getIconButton('associatedSymptoms', log?.associatedSymptoms)}</div></div></div></div>
-                        <div id="step-4" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step4_title">${langData[currentLang].step4_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="sleep_quality_label">${langData[currentLang].sleep_quality_label}</label><div id="sleepQuality-tags" class="flex justify-center gap-4 single-select">${getIconButton('sleepQuality', log?.sleepQuality)}</div></div><div><label class="block text-sm font-medium" data-lang="sleep_duration_label">${langData[currentLang].sleep_duration_label}</label><input type="number" id="sleep-duration" class="w-full p-2 border border-gray-300 rounded-lg" value="${log?.sleepDuration || ''}" min="0" max="24" step="0.5"></div><div><label class="block text-sm font-medium" data-lang="lmp_label">${langData[currentLang].lmp_label}</label><input type="date" id="lmp-date" class="w-full p-2 border border-gray-300 rounded-lg" value="${log?.lmpDate || ''}"></div></div></div>
-                        <div id="step-5" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step5_title">${langData[currentLang].step5_title}</h3><div class="space-y-4"><div><label class="block text-sm font-medium mb-2" data-lang="triggers_label">${langData[currentLang].triggers_label}</label><div id="triggers-tags" class="flex flex-wrap gap-2">${getTagButtons('triggers', log?.triggers)}</div><div class="mt-4"><input type="text" id="custom-trigger" class="w-full p-2 border border-gray-300 rounded-lg" data-lang-placeholder="custom_trigger_placeholder" placeholder="${langData[currentLang].custom_trigger_placeholder}"></div></div><div><label class="block text-sm font-medium mb-2" data-lang="weather_label">${langData[currentLang].weather_label}</label><div id="weather-tags" class="flex flex-wrap gap-2">${getTagButtons('weather', log?.weather)}</div></div></div></div>
-                        <div id="step-6" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step6_title">${langData[currentLang].step6_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="medication_label">${langData[currentLang].medication_label}</label><div id="medication-tags" class="flex flex-wrap gap-2">${getTagButtons('medications', log?.medications)}</div><div class="mt-4"><input type="text" id="custom-medication" class="w-full p-2 border border-gray-300 rounded-lg" data-lang-placeholder="custom_medication_placeholder" placeholder="${langData[currentLang].custom_medication_placeholder}"></div></div><div><label class="block text-sm font-medium mb-2" data-lang="relief_label">${langData[currentLang].relief_label}</label><div id="relief-tags" class="flex flex-wrap gap-2">${getTagButtons('reliefMeasures', log?.reliefMeasures)}</div></div></div></div>
+                        <div id="step-4" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step4_title">${langData[currentLang].step4_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="sleep_quality_label">${langData[currentLang].sleep_quality_label}</label><div id="sleepQuality-tags" class="flex justify-center gap-4 single-select">${getIconButton('sleepQuality', log?.sleepQuality)}</div></div><div><label class="block text-sm font-medium" data-lang="sleep_duration_label">${langData[currentLang].sleep_duration_label}</label><input type="number" id="sleep-duration" class="w-full p-2 border bg-slate-700 border-slate-600 rounded-lg" value="${log?.sleepDuration || ''}" min="0" max="24" step="0.5"></div><div><label class="block text-sm font-medium" data-lang="lmp_label">${langData[currentLang].lmp_label}</label><input type="date" id="lmp-date" class="w-full p-2 border bg-slate-700 border-slate-600 rounded-lg" value="${log?.lmpDate || ''}"></div></div></div>
+                        <div id="step-5" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step5_title">${langData[currentLang].step5_title}</h3><div class="space-y-4"><div><label class="block text-sm font-medium mb-2" data-lang="triggers_label">${langData[currentLang].triggers_label}</label><div id="triggers-tags" class="flex flex-wrap gap-2">${getTagButtons('triggers', log?.triggers)}</div><div class="mt-4"><input type="text" id="custom-trigger" class="w-full p-2 border bg-slate-700 border-slate-600 rounded-lg" data-lang-placeholder="custom_trigger_placeholder" placeholder="${langData[currentLang].custom_trigger_placeholder}"></div></div><div><label class="block text-sm font-medium mb-2" data-lang="weather_label">${langData[currentLang].weather_label}</label><div id="weather-tags" class="flex flex-wrap gap-2">${getTagButtons('weather', log?.weather)}</div></div></div></div>
+                        <div id="step-6" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step6_title">${langData[currentLang].step6_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="medication_label">${langData[currentLang].medication_label}</label><div id="medication-tags" class="flex flex-wrap gap-2">${getTagButtons('medications', log?.medications)}</div><div class="mt-4"><input type="text" id="custom-medication" class="w-full p-2 border bg-slate-700 border-slate-600 rounded-lg" data-lang-placeholder="custom_medication_placeholder" placeholder="${langData[currentLang].custom_medication_placeholder}"></div></div><div><label class="block text-sm font-medium mb-2" data-lang="relief_label">${langData[currentLang].relief_label}</label><div id="relief-tags" class="flex flex-wrap gap-2">${getTagButtons('reliefMeasures', log?.reliefMeasures)}</div></div></div></div>
                         
-                        <div class="mt-8 pt-4 border-t border-gray-200 flex justify-between items-center">
-                            <button id="back-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg transition invisible" data-lang="back_btn">${langData[currentLang].back_btn}</button>
-                            <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition" data-lang="next_btn">${langData[currentLang].next_btn}</button>
+                        <div class="mt-8 pt-4 border-t border-slate-700 flex justify-between items-center">
+                            <button id="back-btn" class="bg-slate-600 hover:bg-slate-500 text-slate-100 font-bold py-2 px-4 rounded-lg transition invisible" data-lang="back_btn">${langData[currentLang].back_btn}</button>
+                            <button id="next-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition" data-lang="next_btn">${langData[currentLang].next_btn}</button>
                             <button id="save-update-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition hidden" data-lang="${log ? 'update_btn' : 'save_btn'}">${langData[currentLang][log ? 'update_btn' : 'save_btn']}</button>
                         </div>
                     </div>
@@ -770,8 +745,8 @@
                 if (!slider || !valueEl) return;
                 const value = slider.value;
                 valueEl.textContent = value;
-                let color = value > 7 ? '#ef4444' : value > 4 ? '#f59e0b' : '#10b981';
-                slider.style.setProperty('--thumb-color', color);
+                let color = value > 7 ? '#F87171' : value > 4 ? '#FACC15' : '#4ADE80';
+                slider.style.background = `linear-gradient(to right, ${color} ${((value - 1) / 9) * 100}%, #334155 ${((value - 1) / 9) * 100}%)`;
                 valueEl.style.color = color;
                 renderPainMarkers();
             }
@@ -794,7 +769,7 @@
 
             function renderPainMarkers() {
                 const intensity = document.getElementById('pain-intensity')?.value || 5;
-                const color = intensity > 7 ? '#ef4444' : intensity > 4 ? '#f59e0b' : '#10b981';
+                const color = intensity > 7 ? '#F87171' : intensity > 4 ? '#FACC15' : '#4ADE80';
                 document.querySelectorAll('.head-diagram-svg').forEach(svg => {
                     svg.querySelectorAll('.pain-marker').forEach(m => m.remove());
                     const view = svg.id.replace('head-', '');
