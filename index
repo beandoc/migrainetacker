@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migraine & Headache Tracker</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+            background-color: #F0F4F8; /* A lighter, softer background */
+        }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s; }
+        .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease-out; }
+        
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 10px;
+            border-radius: 5px; outline: none; transition: background 0.3s ease;
+            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 24px; height: 24px; background: #fff; cursor: pointer;
+            border-radius: 50%; border: 4px solid #4f46e5; /* indigo-600 */
+            box-shadow: 0 0 8px rgba(0,0,0, 0.2);
+        }
+
+        .icon-button, .tag-button { 
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+            background-color: #F3F4F6; /* gray-100 */
+            border: 1px solid #E5E7EB; /* gray-200 */
+            color: #374151; /* gray-700 */
+        }
+        .icon-button.selected, .tag-button.selected { 
+            background-color: #6366F1 !important; /* indigo-500 */
+            color: white !important; 
+            border-color: #818CF8 !important; /* indigo-400 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .calendar-day { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 9999px; font-size: 0.8rem; }
+        .calendar-day.other-month { color: #9CA3AF; }
+        .calendar-day.today { font-weight: bold; border: 2px solid #6366F1; }
+        .calendar-day.intensity-mild { background-color: #A7F3D0; color: #047857; }
+        .calendar-day.intensity-moderate { background-color: #FEF08A; color: #A16207; }
+        .calendar-day.intensity-severe { background-color: #FECACA; color: #991B1B; }
+
+        .head-diagram-container { position: relative; width: 150px; height: 150px; margin: auto; }
+        .head-diagram-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+        .head-diagram-svg.active { display: block; }
+        .head-outline { fill: #E5E7EB; stroke: #9CA3AF; stroke-width: 1.5; }
+        .pain-marker { cursor: pointer; transition: opacity 0.2s ease; }
+        .pain-marker:hover { opacity: 0.7; }
+        .view-switcher-btn { background-color: #E5E7EB; color: #4B5563; }
+        .view-switcher-btn.active { background-color: #6366F1; color: white; }
+        .nav-btn { color: #4B5563; }
+        .nav-btn.active { color: #4F46E5; font-weight: 600; border-bottom: 2px solid #4F46E5;}
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm shadow-sm border-b sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold text-gray-800">🧠 Migraine Tracker</h1>
+                <div id="nav-buttons" class="flex space-x-2">
+                    <button data-view="dashboard" class="nav-btn active px-3 py-2 text-sm font-medium transition-colors">Dashboard</button>
+                    <button data-view="analytics" class="nav-btn px-3 py-2 text-sm font-medium transition-colors">Analytics</button>
+                    <button data-view="settings" class="nav-btn px-3 py-2 text-sm font-medium transition-colors">Settings</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard View -->
+    <div id="dashboard" class="view active max-w-4xl mx-auto p-4">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+            <div class="relative z-10">
+                <div id="hero-content">
+                    <!-- Hero content injected by JS -->
+                </div>
+                <div class="flex flex-wrap gap-3 mt-6">
+                    <button id="hero-log-headache-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center">
+                        <span class="mr-2">⚡</span> Log Headache
+                    </button>
+                    <button id="hero-view-analytics-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center">
+                        <span class="mr-2">📊</span> View Analytics
+                    </button>
+                    <button id="hero-generate-report-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center">
+                        <span class="mr-2">📋</span> Doctor Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div id="stats-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Stats injected by JS -->
+        </div>
+
+        <!-- Recent Entries -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-100">
+            <div class="p-6 border-b border-gray-100">
+                <h2 class="text-lg font-semibold text-gray-800">Recent Entries</h2>
+                <p class="text-sm text-gray-500">Your latest migraine logs and patterns</p>
+            </div>
+            <div class="divide-y divide-gray-100" id="logs-container">
+                <!-- Recent entries will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics View -->
+    <div id="analytics" class="view max-w-4xl mx-auto p-4">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Analytics & Insights</h2>
+        <div class="bg-white rounded-lg p-6 shadow-sm mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📅 My Migraine Calendar</h3>
+            <div id="analytics-calendar-container">
+                <!-- Calendar will be populated here -->
+            </div>
+        </div>
+        <!-- More analytics can go here -->
+    </div>
+
+    <!-- Settings View -->
+    <div id="settings" class="view max-w-4xl mx-auto p-4">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+            <p class="text-gray-600">Settings page is under construction. You will soon be able to manage medications and triggers here.</p>
+        </div>
+    </div>
+
+    <!-- Modal for Logging -->
+    <div id="log-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 invisible opacity-0">
+        <div id="modal-content" class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl transform scale-95 max-h-[90vh] overflow-y-auto">
+            <!-- Content dynamically injected by JS -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- LANGUAGE & STATIC DATA ---
+            const langData = {
+                en: {
+                    welcome_message: "Welcome back!",
+                    attack_free_subtitle: "You have been",
+                    attack_free_title: "attack-free",
+                    attack_free_days: (d) => d === 1 ? `1 day` : `${d} days`,
+                    module_title: "Migraine Tracker", module_subtitle: "Log symptoms, gain insights, and share reports.", log_headache_btn: "+ Log a Headache", generate_report_btn: "Report",
+                    main_card_title: "How are you feeling?", main_card_subtitle: "Log an attack to understand your patterns.",
+                    insights_title: "My Insights", recent_logs_title: "Recent Logs", no_logs_msg: "Your logged headaches will appear here.", modal_title_new: "Log a New Headache", modal_title_edit: "Edit Headache Log", modal_subtitle: "Fill in the details below.",
+                    step1_title: "Time & Intensity", start_time_label: "Start Time", end_time_label: "End Time (optional)", intensity_label: "Pain Intensity",
+                    step2_title: "Location & Character", step2_subtitle: "Where does it hurt? Tap to add/remove markers.", character_label: "Pain Character",
+                    step3_title: "Symptoms", aura_label: "Aura", symptoms_label: "Associated Symptoms",
+                    step4_title: "Lifestyle", sleep_quality_label: "Last Night's Sleep Quality", sleep_duration_label: "Sleep Duration (hours)", lmp_label: "Last Menstrual Period (optional)",
+                    step5_title: "Triggers & Environment", triggers_label: "Potential Triggers", weather_label: "Weather",
+                    step6_title: "Treatment", medication_label: "Medication Taken", relief_label: "Relief Measures",
+                    back_btn: "Back", next_btn: "Next", save_btn: "Save Log", update_btn: "Update Log", yes: "Yes", no: "No",
+                    custom_trigger_placeholder: "Or add a custom trigger...", custom_medication_placeholder: "Or add a custom medication...",
+                    insights_common_trigger: "Top Trigger", insights_avg_duration: "Avg. Duration", insights_avg_intensity: "Avg. Intensity", insights_total_logs: "Total Attacks", insights_none: "Not enough data",
+                    day_sun: "S", day_mon: "M", day_tue: "T", day_wed: "W", day_thu: "T", day_fri: "F", day_sat: "S",
+                    delete_confirm_title: "Are you sure?", delete_confirm_text: "This action cannot be undone.", delete_btn: "Delete", cancel_btn: "Cancel",
+                    duration_label: "Duration",
+                    view_front: "Front", view_left: "Left", view_right: "Right", view_back: "Back", view_top: "Top",
+                },
+                hi: {
+                    welcome_message: "नमस्ते!",
+                    attack_free_subtitle: "आप",
+                    attack_free_title: "हमले से मुक्त हैं",
+                    attack_free_days: (d) => `${d} दिनों से`,
+                    module_title: "माइग्रेन ट्रैकर", module_subtitle: "लक्षण लॉग करें, अंतर्दृष्टि प्राप्त करें, और रिपोर्ट साझा करें।", log_headache_btn: "+ सिरदर्द लॉग करें", generate_report_btn: "रिपोर्ट",
+                    main_card_title: "कैसा महसूस कर रहे हैं?", main_card_subtitle: "अपने पैटर्न को समझने के लिए एक हमला लॉग करें।",
+                    insights_title: "मेरी अंतर्दृष्टि", recent_logs_title: "हाल के लॉग", no_logs_msg: "आपके लॉग किए गए सिरदर्द यहां दिखाई देंगे।", modal_title_new: "एक नया सिरदर्द लॉग करें", modal_title_edit: "सिरदर्द लॉग संपादित करें", modal_subtitle: "नीचे विवरण भरें।",
+                    step1_title: "समय और तीव्रता", start_time_label: "शुरू होने का समय", end_time_label: "समाप्ति समय (वैकल्पिक)", intensity_label: "दर्द की तीव्रता",
+                    step2_title: "स्थान और प्रकार", step2_subtitle: "यह कहाँ दर्द करता है? मार्कर जोड़ने/हटाने के लिए टैप करें।", character_label: "दर्द का प्रकार",
+                    step3_title: "लक्षण", aura_label: "आभा (Aura)", symptoms_label: "संबंधित लक्षण",
+                    step4_title: "जीवनशैली", sleep_quality_label: "पिछली रात की नींद की गुणवत्ता", sleep_duration_label: "नींद की अवधि (घंटे)", lmp_label: "अंतिम मासिक धर्म (वैकल्पिक)",
+                    step5_title: "ट्रिगर और पर्यावरण", triggers_label: "संभावित ट्रिगर", weather_label: "मौसम",
+                    step6_title: "उपचार", medication_label: "ली गई दवा", relief_label: "राहत के उपाय",
+                    back_btn: "वापस", next_btn: "अगला", save_btn: "लॉग सहेजें", update_btn: "लॉग अपडेट करें", yes: "हाँ", no: "नहीं",
+                    custom_trigger_placeholder: "या एक कस्टम ट्रिगर जोड़ें...", custom_medication_placeholder: "या एक कस्टम दवा जोड़ें...",
+                    insights_common_trigger: "आम ट्रिगर", insights_avg_duration: "औसत अवधि", insights_avg_intensity: "औसत तीव्रता", insights_total_logs: "कुल हमले", insights_none: "अपर्याप्त डेटा",
+                    day_sun: "र", day_mon: "सो", day_tue: "मं", day_wed: "बु", day_thu: "गु", day_fri: "शु", day_sat: "श",
+                    delete_confirm_title: "क्या आप निश्चित हैं?", delete_confirm_text: "यह क्रिया पूर्ववत नहीं की जा सकती।", delete_btn: "हटाएं", cancel_btn: "रद्द करें",
+                    duration_label: "अवधि",
+                    view_front: "सामने", view_left: "बायाँ", view_right: "दायाँ", view_back: "पीछे", view_top: "ऊपर",
+                }
+            };
+            const iconData = {
+                good: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`,
+                average: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>`,
+                poor: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`,
+                throbbing: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>`,
+                stabbing: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>`,
+                dullache: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M12 6v.01" /></svg>`,
+                pressure: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7.014A8.003 8.003 0 0112 3c1.398 0 2.743.57 3.714 1.543C18.5 6.5 19 9 19 10c2 0 2.657-1.343 2.657-1.343a8 8 0 01-4.001 9.999z" /></svg>`,
+                burning: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7.014A8.003 8.003 0 0112 3c1.398 0 2.743.57 3.714 1.543C18.5 6.5 19 9 19 10c2 0 2.657-1.343 2.657-1.343a8 8 0 01-4.001 9.999z" /></svg>`,
+                nausea: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
+                photophobia: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`,
+                phonophobia: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.858 15.858a5 5 0 01-2.828-7.072m9.9 9.9A9 9 0 015.858 5.858m12.364 12.364L12 12" /></svg>`,
+                dizziness: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>`,
+                neckpain: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>`
+            };
+            const tagData = {
+                sleepQuality: { en: ["Good", "Average", "Poor"], hi: ["अच्छी", "औसत", "खराब"] },
+                painCharacter: { en: ["Throbbing", "Stabbing", "Dull Ache", "Pressure", "Burning"], hi: ["धमक", "चुभन", "हल्का दर्द", "दबाव", "जलन"] },
+                associatedSymptoms: { en: ["Nausea", "Photophobia", "Phonophobia", "Dizziness", "Neck Pain"], hi: ["मतली", "फोटोफोबिया", "फोनोफोबिया", "चक्कर आना", "गर्दन दर्द"] },
+                triggers: { en: ["Stress", "Lack of Sleep", "Dehydration", "Bright Lights", "Loud Noises", "Skipped Meal"], hi: ["तनाव", "नींद की कमी", "निर्जलीकरण", "तेज रोशनी", "जोर की आवाजें", "भोजन छोड़ना"] },
+                weather: { en: ["Sunny", "Cloudy", "Rainy", "Stormy", "Pressure Drop"], hi: ["धूप", "बादल", "बरसात", "तूफानी", "दबाव में गिरावट"] },
+                medications: { en: ["Sumatriptan", "Ibuprofen", "Naproxen", "Paracetamol"], hi: ["सुमाट्रिप्टान", "इबुप्रोफेन", "नेप्रोक्सेन", "पेरासिटामोल"] },
+                reliefMeasures: { en: ["Dark Room", "Cold Pack", "Sleep", "Hydration", "Meditation"], hi: ["अंधेरा कमरा", "कोल्ड पैक", "नींद", "जलयोजन", "ध्यान"] }
+            };
+
+            // --- STATE MANAGEMENT ---
+            let currentLang = 'en';
+            let currentStep = 1;
+            const totalSteps = 6;
+            let logs = [];
+            let editingLogId = null;
+            let calendarDate = new Date();
+            let painMarkers = [];
+            let lastRenderedDay = new Date().getDate();
+
+            // --- DOM Elements ---
+            const modal = document.getElementById('log-modal');
+            const modalContent = document.getElementById('modal-content');
+
+            // --- FUNCTIONS ---
+            
+            const switchLanguage = (lang) => {
+                currentLang = lang;
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.getAttribute('data-lang');
+                    if (langData[lang][key]) {
+                         if (typeof langData[lang][key] !== 'function') {
+                            el.textContent = langData[lang][key];
+                        }
+                    }
+                });
+                document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-lang-placeholder');
+                    if (langData[lang][key]) el.placeholder = langData[lang][key];
+                });
+                document.getElementById('lang-en').classList.toggle('bg-indigo-500', lang === 'en');
+                document.getElementById('lang-en').classList.toggle('text-white', lang === 'en');
+                document.getElementById('lang-hi').classList.toggle('bg-indigo-500', lang === 'hi');
+                document.getElementById('lang-hi').classList.toggle('text-white', lang === 'hi');
+                renderAll();
+            };
+
+            const openModal = (logId = null) => {
+                editingLogId = logId;
+                const log = logId ? logs.find(l => l.id === logId) : null;
+                painMarkers = log ? log.painLocation : [];
+                renderModalContent(log);
+                currentStep = 1;
+                updateModalState();
+                modal.classList.remove('invisible', 'opacity-0');
+                modal.querySelector('.modal-content').classList.remove('scale-95');
+                modal.querySelector('.modal-content').classList.add('scale-100');
+                updateIntensitySlider();
+            };
+
+            const closeModal = () => {
+                modal.querySelector('.modal-content').classList.remove('scale-100');
+                modal.querySelector('.modal-content').classList.add('scale-95');
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('invisible');
+                    modalContent.innerHTML = '';
+                }, 300);
+            };
+
+            const updateModalState = () => {
+                document.querySelectorAll('.step-content').forEach(step => step.classList.remove('active'));
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.getElementById('progress-bar').style.width = `${(currentStep / totalSteps) * 100}%`;
+                document.getElementById('back-btn').classList.toggle('invisible', currentStep === 1);
+                const isLastStep = currentStep === totalSteps;
+                document.getElementById('next-btn').classList.toggle('hidden', isLastStep);
+                document.getElementById('save-update-btn').classList.toggle('hidden', !isLastStep);
+            };
+
+            const saveLogs = () => localStorage.setItem('migraineLogs', JSON.stringify(logs));
+            
+            const loadLogs = () => {
+                const storedLogs = localStorage.getItem('migraineLogs');
+                if (storedLogs) {
+                    logs = JSON.parse(storedLogs);
+                } else {
+                    // Create default data if no logs exist
+                    const today = new Date();
+                    const twoDaysAgo = new Date();
+                    twoDaysAgo.setDate(today.getDate() - 2);
+
+                    const toISODateString = (date) => {
+                        if (!date) return '';
+                        const d = new Date(date);
+                        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                        return d.toISOString().slice(0, 16);
+                    };
+
+                    logs = [
+                        {
+                            id: twoDaysAgo.getTime(),
+                            startTime: toISODateString(twoDaysAgo),
+                            endTime: toISODateString(new Date(twoDaysAgo.getTime() + (3 * 60 * 60 * 1000))),
+                            painIntensity: "4",
+                            painLocation: [{ id: Date.now() + 1, view: 'left', x: "50.00", y: "50.00" }],
+                            painCharacter: ["Dull Ache"],
+                            aura: false,
+                            associatedSymptoms: [],
+                            sleepQuality: ["Good"],
+                            sleepDuration: "8",
+                            lmpDate: "",
+                            triggers: ["Lack of Sleep"],
+                            weather: ["Cloudy"],
+                            medications: [],
+                            reliefMeasures: ["Hydration"]
+                        }
+                    ];
+                    saveLogs();
+                }
+            };
+
+            const handleSaveOrUpdate = () => {
+                const data = collectDataFromModal();
+                if (editingLogId) {
+                    const index = logs.findIndex(l => l.id === editingLogId);
+                    logs[index] = { ...logs[index], ...data, id: editingLogId };
+                } else {
+                    logs.push({ ...data, id: Date.now() });
+                }
+                saveLogs();
+                renderAll();
+                closeModal();
+            };
+            
+            const handleDelete = (logId) => {
+                const title = langData[currentLang].delete_confirm_title;
+                const text = langData[currentLang].delete_confirm_text;
+                const confirmText = langData[currentLang].delete_btn;
+                const cancelText = langData[currentLang].cancel_btn;
+
+                const confirmDiv = document.createElement('div');
+                confirmDiv.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4';
+                confirmDiv.innerHTML = `
+                    <div class="bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-sm text-center border border-slate-700">
+                        <h3 class="text-lg font-bold text-white mb-2">${title}</h3>
+                        <p class="text-slate-300 mb-6">${text}</p>
+                        <div class="flex justify-center gap-4">
+                            <button id="confirm-delete-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">${confirmText}</button>
+                            <button id="cancel-delete-btn" class="bg-slate-600 hover:bg-slate-500 text-slate-100 font-bold py-2 px-4 rounded-lg">${cancelText}</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(confirmDiv);
+
+                document.getElementById('confirm-delete-btn').onclick = () => {
+                    logs = logs.filter(l => l.id !== logId);
+                    saveLogs();
+                    renderAll();
+                    document.body.removeChild(confirmDiv);
+                };
+                document.getElementById('cancel-delete-btn').onclick = () => {
+                    document.body.removeChild(confirmDiv);
+                };
+            };
+
+            const renderAll = () => {
+                renderHeroCard();
+                renderStats();
+                renderLogs();
+                const activeView = document.querySelector('.nav-btn.active').dataset.view;
+                if (activeView === 'analytics') {
+                    renderCalendar('analytics-calendar-container');
+                }
+            };
+
+            const renderHeroCard = () => {
+                const card = document.getElementById('hero-content');
+                const sortedLogs = [...logs].sort((a,b) => new Date(b.startTime) - new Date(a.startTime));
+                let days = 0;
+                
+                if (logs.length === 0) {
+                     card.innerHTML = `
+                        <h1 class="text-3xl md:text-4xl font-bold mb-2">${langData[currentLang].welcome_message} 👋</h1>
+                        <p class="text-lg text-indigo-100 mb-4">${langData[currentLang].main_card_subtitle}</p>
+                    `;
+                    return;
+                }
+
+                const lastAttack = new Date(sortedLogs[0].startTime);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                lastAttack.setHours(0,0,0,0);
+                
+                days = Math.floor((today - lastAttack) / (1000 * 60 * 60 * 24));
+                if (days < 0) days = 0;
+
+                card.innerHTML = `
+                    <h1 class="text-3xl md:text-4xl font-bold mb-2">${langData[currentLang].welcome_message}</h1>
+                    <p class="text-lg text-indigo-100 mb-4">${langData[currentLang].attack_free_subtitle} 
+                        <span class="font-bold text-white">${days} ${langData[currentLang].attack_free_days(days).replace(/[0-9]/g, '')}</span> 
+                    ${langData[currentLang].attack_free_title}.</p>
+                `;
+            };
+
+            const renderLogs = () => {
+                const container = document.getElementById('logs-container');
+                if (logs.length === 0) {
+                    container.innerHTML = `<div class="p-6 text-center text-gray-500">${langData[currentLang].no_logs_msg}</div>`;
+                    return;
+                }
+                container.innerHTML = '';
+                [...logs].sort((a, b) => new Date(b.startTime) - new Date(a.startTime)).forEach(data => {
+                    const card = document.createElement('div');
+                    card.className = 'p-4 hover:bg-gray-50';
+                    const date = new Date(data.startTime);
+                    const formattedDate = date.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const intensity = parseInt(data.painIntensity);
+                    let intensityColor = intensity > 7 ? 'bg-red-500' : intensity > 4 ? 'bg-yellow-500' : 'bg-green-500';
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <div class="flex-shrink-0 w-12 h-12 rounded-lg ${intensityColor} flex flex-col items-center justify-center text-white font-bold">
+                                    <span class="text-lg">${intensity}</span>
+                                    <span class="text-xs opacity-80">/10</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">${formattedDate} at ${formattedTime}</p>
+                                    <p class="text-sm text-gray-500">${data.triggers.join(', ') || 'No triggers logged'}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button class="edit-btn text-gray-400 hover:text-indigo-600" data-id="${data.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
+                                <button class="delete-btn text-gray-400 hover:text-red-600" data-id="${data.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg></button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            };
+            
+            const renderCalendar = (containerId) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = ''; // Clear previous calendar
+                const calendarWrapper = document.createElement('div');
+
+                const header = document.createElement('div');
+                header.className = 'flex justify-between items-center mb-4';
+                header.innerHTML = `
+                    <button id="cal-prev-month-btn" class="p-2 rounded-full hover:bg-gray-100">&lt;</button>
+                    <h4 id="cal-month-year" class="font-bold text-lg text-gray-800"></h4>
+                    <button id="cal-next-month-btn" class="p-2 rounded-full hover:bg-gray-100">&gt;</button>
+                `;
+                calendarWrapper.appendChild(header);
+
+                const dayHeaders = document.createElement('div');
+                dayHeaders.className = 'grid grid-cols-7 text-center text-xs font-semibold text-gray-500 mb-2';
+                dayHeaders.innerHTML = `
+                    <div data-lang="day_sun">S</div><div data-lang="day_mon">M</div><div data-lang="day_tue">T</div><div data-lang="day_wed">W</div><div data-lang="day_thu">T</div><div data-lang="day_fri">F</div><div data-lang="day_sat">S</div>
+                `;
+                calendarWrapper.appendChild(dayHeaders);
+
+                const grid = document.createElement('div');
+                grid.id = 'calendar-grid-dynamic';
+                grid.className = 'calendar-grid';
+                calendarWrapper.appendChild(grid);
+                container.appendChild(calendarWrapper);
+
+                // Add event listeners for new buttons
+                document.getElementById('cal-prev-month-btn').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(containerId); });
+                document.getElementById('cal-next-month-btn').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(containerId); });
+
+                const monthYearEl = document.getElementById('cal-month-year');
+                monthYearEl.textContent = calendarDate.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-US', { month: 'long', year: 'numeric' });
+                const year = calendarDate.getFullYear();
+                const month = calendarDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const logsThisMonth = logs.filter(log => new Date(log.startTime).getFullYear() === year && new Date(log.startTime).getMonth() === month);
+                for (let i = 0; i < firstDay.getDay(); i++) {
+                    grid.innerHTML += `<div class="calendar-day other-month"></div>`;
+                }
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'calendar-day';
+                    dayEl.textContent = day;
+                    const today = new Date();
+                    if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                        dayEl.classList.add('today');
+                    }
+                    const logsOnDay = logsThisMonth.filter(log => new Date(log.startTime).getDate() === day);
+                    if (logsOnDay.length > 0) {
+                        const maxIntensity = Math.max(...logsOnDay.map(l => l.painIntensity));
+                        if (maxIntensity <= 4) dayEl.classList.add('intensity-mild');
+                        else if (maxIntensity <= 7) dayEl.classList.add('intensity-moderate');
+                        else dayEl.classList.add('intensity-severe');
+                    }
+                    grid.appendChild(dayEl);
+                }
+            };
+
+            const renderStats = () => {
+                const container = document.getElementById('stats-container');
+                if (logs.length < 1) {
+                    container.innerHTML = `<div class="bg-white rounded-xl p-6 shadow-lg border text-center md:col-span-3"><p class="text-gray-500">No stats to show yet. Log a headache to get started!</p></div>`;
+                    return;
+                }
+                const getMostCommon = (field) => {
+                    if (logs.length === 0) return langData[currentLang].insights_none;
+                    const counts = logs.flatMap(log => log[field]).reduce((acc, val) => { acc[val] = (acc[val] || 0) + 1; return acc; }, {});
+                    const mostCommon = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+                    return mostCommon || langData[currentLang].insights_none;
+                };
+                const getAverageIntensity = () => {
+                    if (logs.length === 0) return 'N/A';
+                    return (logs.reduce((sum, log) => sum + parseInt(log.painIntensity), 0) / logs.length).toFixed(1);
+                };
+                const insights = [
+                    { titleKey: "insights_total_logs", value: logs.length, icon: '⚡' },
+                    { titleKey: "insights_avg_intensity", value: getAverageIntensity(), icon: '📊' },
+                    { titleKey: "insights_common_trigger", value: getMostCommon('triggers'), icon: '🎯' }
+                ];
+                container.innerHTML = insights.map(insight => `
+                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 mb-1">${langData[currentLang][insight.titleKey]}</p>
+                                <p class="text-3xl font-bold text-gray-800">${insight.value}</p>
+                            </div>
+                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+                                <span class="text-white text-xl">${insight.icon}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            const generatePDF = () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(18);
+                doc.text("Migraine Log Report", 14, 22);
+                doc.setFontSize(11);
+                doc.setTextColor(100);
+                doc.text(`Report Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+                
+                const tableData = logs.map(log => {
+                    const duration = log.endTime ? `${Math.round((new Date(log.endTime) - new Date(log.startTime)) / 3600000)}h` : 'Ongoing';
+                    return [
+                        new Date(log.startTime).toLocaleDateString(),
+                        duration,
+                        log.painIntensity,
+                        log.triggers.join(', ') || 'N/A',
+                        log.medications.join(', ') || 'N/A'
+                    ];
+                });
+                doc.autoTable({
+                    head: [['Date', 'Duration', 'Severity', 'Triggers', 'Medication']],
+                    body: tableData,
+                    startY: doc.previousAutoTable ? doc.previousAutoTable.finalY + 20 : 40,
+                    theme: 'grid',
+                    headStyles: { fillColor: [79, 70, 229] }, // indigo-600
+                });
+                doc.save('migraine-report.pdf');
+            };
+
+            const showView = (viewName) => {
+                document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+                document.getElementById(viewName).classList.add('active');
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.view === viewName);
+                });
+                if (viewName === 'analytics') {
+                    renderCalendar('analytics-calendar-container');
+                }
+            };
+
+            // --- EVENT LISTENERS ---
+            document.getElementById('lang-en').addEventListener('click', () => switchLanguage('en'));
+            document.getElementById('lang-hi').addEventListener('click', () => switchLanguage('hi'));
+            document.getElementById('hero-log-headache-btn').addEventListener('click', () => openModal());
+            document.getElementById('hero-view-analytics-btn').addEventListener('click', () => showView('analytics'));
+            document.getElementById('hero-generate-report-btn').addEventListener('click', generatePDF);
+            
+            document.getElementById('nav-buttons').addEventListener('click', (e) => {
+                if(e.target.matches('.nav-btn')) {
+                    showView(e.target.dataset.view);
+                }
+            });
+            
+            document.querySelector('body').addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.edit-btn');
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (editBtn) openModal(parseInt(editBtn.dataset.id));
+                if (deleteBtn) handleDelete(parseInt(deleteBtn.dataset.id));
+            });
+
+            // --- REAL-TIME UPDATE ---
+            const periodicallyUpdateUI = () => {
+                setInterval(() => {
+                    const currentDay = new Date().getDate();
+                    if (currentDay !== lastRenderedDay) {
+                        renderHeroCard();
+                        lastRenderedDay = currentDay;
+                    }
+                }, 60000); // Check every minute
+            };
+
+            // Initial Setup
+            loadLogs();
+            switchLanguage('en');
+            periodicallyUpdateUI();
+            
+            function setupModalEventListeners() {
+                document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => { if (e.target.id === 'log-modal') closeModal(); });
+                document.getElementById('next-btn').addEventListener('click', () => { if (currentStep < totalSteps) { currentStep++; updateModalState(); } });
+                document.getElementById('back-btn').addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateModalState(); } });
+                document.getElementById('save-update-btn').addEventListener('click', handleSaveOrUpdate);
+                document.getElementById('pain-intensity').addEventListener('input', updateIntensitySlider);
+                
+                document.querySelector('.head-diagram-container').addEventListener('click', handlePainMarker);
+                document.querySelector('.view-switcher').addEventListener('click', (e) => {
+                    if (e.target.matches('.view-switcher-btn')) {
+                        document.querySelectorAll('.view-switcher-btn').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        document.querySelectorAll('.head-diagram-svg').forEach(svg => svg.classList.remove('active'));
+                        document.getElementById(`head-${e.target.dataset.view}`).classList.add('active');
+                    }
+                });
+                modalContent.addEventListener('click', (e) => {
+                    const button = e.target.closest('.tag-button, .icon-button');
+                    if (button) {
+                        if (button.closest('.single-select')) {
+                            if (!button.classList.contains('selected')) {
+                                button.parentElement.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
+                                button.classList.add('selected');
+                            }
+                        } else {
+                            button.classList.toggle('selected');
+                        }
+                    }
+                });
+            }
+
+            function renderModalContent(log = null) {
+                const toISODateString = (date) => {
+                    if (!date) return '';
+                    const d = new Date(date);
+                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                    return d.toISOString().slice(0, 16);
+                };
+
+                const getIconButton = (key, selectedValues = []) => {
+                    const dataSet = tagData[key];
+                    if (!dataSet) return '';
+                    return dataSet[currentLang].map(item => {
+                        const enValue = dataSet.en[dataSet[currentLang].indexOf(item)];
+                        const isSelected = selectedValues.includes(enValue);
+                        const iconKey = enValue.toLowerCase().replace(/\s+/g, '');
+                        return `<button class="icon-button ${isSelected ? 'selected' : ''} flex flex-col items-center justify-center gap-2 p-3 rounded-lg flex-1" data-value="${enValue}">
+                                    <span class="text-indigo-500">${iconData[iconKey]}</span>
+                                    <span class="text-xs text-center">${item}</span>
+                                </button>`;
+                    }).join('');
+                };
+                
+                const getTagButtons = (key, selectedValues = []) => {
+                    return tagData[key][currentLang].map(item => {
+                        const enValue = tagData[key].en[tagData[key][currentLang].indexOf(item)];
+                        const isSelected = selectedValues.includes(enValue);
+                        return `<button class="tag-button ${isSelected ? 'selected' : ''} py-2 px-4 text-sm font-medium" data-value="${enValue}">${item}</button>`;
+                    }).join('');
+                };
+
+                modalContent.innerHTML = `
+                    <div class="p-6 md:p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-800" data-lang="${log ? 'modal_title_edit' : 'modal_title_new'}">${langData[currentLang][log ? 'modal_title_edit' : 'modal_title_new']}</h2>
+                                <p class="text-sm text-gray-500" data-lang="modal_subtitle">${langData[currentLang].modal_subtitle}</p>
+                            </div>
+                            <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5 mb-6"><div id="progress-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style="width: ${100/totalSteps}%"></div></div>
+                        
+                        <div id="step-1" class="step-content active"><h3 class="font-semibold text-lg mb-4" data-lang="step1_title">${langData[currentLang].step1_title}</h3><div class="space-y-6"><div><label class="flex justify-between text-sm font-medium"><span data-lang="intensity_label">${langData[currentLang].intensity_label}</span><span id="intensity-value" class="font-bold text-indigo-600">${log?.painIntensity || 5}</span></label><input type="range" id="pain-intensity" min="1" max="10" value="${log?.painIntensity || 5}"></div><div><label class="block text-sm font-medium" data-lang="start_time_label">${langData[currentLang].start_time_label}</label><input type="datetime-local" id="start-time" class="w-full p-2 border border-gray-300 rounded-lg" value="${toISODateString(log?.startTime) || toISODateString(new Date())}"></div><div><label class="block text-sm font-medium" data-lang="end_time_label">${langData[currentLang].end_time_label}</label><input type="datetime-local" id="end-time" class="w-full p-2 border border-gray-300 rounded-lg" value="${toISODateString(log?.endTime)}"></div></div></div>
+                        <div id="step-2" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step2_title">${langData[currentLang].step2_title}</h3><div class="grid md:grid-cols-2 gap-6"><div class="text-center"><div class="view-switcher flex justify-center gap-1 mb-2 rounded-lg p-1 bg-gray-200"><button class="view-switcher-btn active flex-1 py-1 px-2 text-xs rounded-md" data-view="front" data-lang="view_front">${langData[currentLang].view_front}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="left" data-lang="view_left">${langData[currentLang].view_left}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="right" data-lang="view_right">${langData[currentLang].view_right}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="back" data-lang="view_back">${langData[currentLang].view_back}</button><button class="view-switcher-btn flex-1 py-1 px-2 text-xs rounded-md" data-view="top" data-lang="view_top">${langData[currentLang].view_top}</button></div><div class="head-diagram-container"><svg id="head-front" class="head-diagram-svg active" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path></svg><svg id="head-left" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 50 10 C 85 10, 85 60, 65 80 C 60 95, 25 90, 25 70 C 25 40, 50 10, 50 10 Z"></path></svg><svg id="head-right" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 50 10 C 15 10, 15 60, 35 80 C 40 95, 75 90, 75 70 C 75 40, 50 10, 50 10 Z"></path></svg><svg id="head-back" class="head-diagram-svg" viewBox="0 0 100 100"><path class="head-outline" d="M 20 25 C 20 5, 80 5, 80 25 C 95 45, 95 80, 80 95 C 80 95, 20 95, 20 95 C 5 80, 5 45, 20 25 Z"></path></svg><svg id="head-top" class="head-diagram-svg" viewBox="0 0 100 100"><ellipse class="head-outline" cx="50" cy="50" rx="35" ry="45"></ellipse></svg></div></div><div><label class="block text-sm font-medium mb-2" data-lang="character_label">${langData[currentLang].character_label}</label><div id="pain-character-tags" class="grid grid-cols-2 gap-2">${getIconButton('painCharacter', log?.painCharacter)}</div></div></div></div>
+                        <div id="step-3" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step3_title">${langData[currentLang].step3_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="aura_label">${langData[currentLang].aura_label}</label><div class="flex gap-4 single-select"><button class="tag-button flex-1" data-value="yes" data-lang="yes">${langData[currentLang].yes}</button><button class="tag-button flex-1" data-value="no" data-lang="no">${langData[currentLang].no}</button></div></div><div><label class="block text-sm font-medium mb-2" data-lang="symptoms_label">${langData[currentLang].symptoms_label}</label><div id="associated-symptoms-tags" class="grid grid-cols-2 gap-2">${getIconButton('associatedSymptoms', log?.associatedSymptoms)}</div></div></div></div>
+                        <div id="step-4" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step4_title">${langData[currentLang].step4_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="sleep_quality_label">${langData[currentLang].sleep_quality_label}</label><div id="sleepQuality-tags" class="flex justify-center gap-4 single-select">${getIconButton('sleepQuality', log?.sleepQuality)}</div></div><div><label class="block text-sm font-medium" data-lang="sleep_duration_label">${langData[currentLang].sleep_duration_label}</label><input type="number" id="sleep-duration" class="w-full p-2 border border-gray-300 rounded-lg" value="${log?.sleepDuration || ''}" min="0" max="24" step="0.5"></div><div><label class="block text-sm font-medium" data-lang="lmp_label">${langData[currentLang].lmp_label}</label><input type="date" id="lmp-date" class="w-full p-2 border border-gray-300 rounded-lg" value="${log?.lmpDate || ''}"></div></div></div>
+                        <div id="step-5" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step5_title">${langData[currentLang].step5_title}</h3><div class="space-y-4"><div><label class="block text-sm font-medium mb-2" data-lang="triggers_label">${langData[currentLang].triggers_label}</label><div id="triggers-tags" class="flex flex-wrap gap-2">${getTagButtons('triggers', log?.triggers)}</div><div class="mt-4"><input type="text" id="custom-trigger" class="w-full p-2 border border-gray-300 rounded-lg" data-lang-placeholder="custom_trigger_placeholder" placeholder="${langData[currentLang].custom_trigger_placeholder}"></div></div><div><label class="block text-sm font-medium mb-2" data-lang="weather_label">${langData[currentLang].weather_label}</label><div id="weather-tags" class="flex flex-wrap gap-2">${getTagButtons('weather', log?.weather)}</div></div></div></div>
+                        <div id="step-6" class="step-content"><h3 class="font-semibold text-lg mb-4" data-lang="step6_title">${langData[currentLang].step6_title}</h3><div class="space-y-6"><div><label class="block text-sm font-medium mb-2" data-lang="medication_label">${langData[currentLang].medication_label}</label><div id="medication-tags" class="flex flex-wrap gap-2">${getTagButtons('medications', log?.medications)}</div><div class="mt-4"><input type="text" id="custom-medication" class="w-full p-2 border border-gray-300 rounded-lg" data-lang-placeholder="custom_medication_placeholder" placeholder="${langData[currentLang].custom_medication_placeholder}"></div></div><div><label class="block text-sm font-medium mb-2" data-lang="relief_label">${langData[currentLang].relief_label}</label><div id="relief-tags" class="flex flex-wrap gap-2">${getTagButtons('reliefMeasures', log?.reliefMeasures)}</div></div></div></div>
+                        
+                        <div class="mt-8 pt-4 border-t border-gray-200 flex justify-between items-center">
+                            <button id="back-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg transition invisible" data-lang="back_btn">${langData[currentLang].back_btn}</button>
+                            <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition" data-lang="next_btn">${langData[currentLang].next_btn}</button>
+                            <button id="save-update-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition hidden" data-lang="${log ? 'update_btn' : 'save_btn'}">${langData[currentLang][log ? 'update_btn' : 'save_btn']}</button>
+                        </div>
+                    </div>
+                `;
+                
+                const auraVal = log?.aura ? 'yes' : 'no';
+                const auraBtn = modalContent.querySelector(`#step-3 [data-value="${auraVal}"]`);
+                if (auraBtn) auraBtn.classList.add('selected');
+
+                const sleepQualityVal = log?.sleepQuality?.[0];
+                if(sleepQualityVal) {
+                    const sleepBtn = modalContent.querySelector(`#sleepQuality-tags [data-value="${sleepQualityVal}"]`);
+                    if (sleepBtn) sleepBtn.classList.add('selected');
+                }
+                
+                renderPainMarkers();
+                setupModalEventListeners();
+            }
+
+            function collectDataFromModal() {
+                const getSelected = (containerId) => Array.from(document.querySelectorAll(`#${containerId} .selected`)).map(b => b.dataset.value);
+                const customTrigger = document.getElementById('custom-trigger').value.trim();
+                const customMedication = document.getElementById('custom-medication').value.trim();
+
+                return {
+                    startTime: document.getElementById('start-time').value,
+                    endTime: document.getElementById('end-time').value || null,
+                    painIntensity: document.getElementById('pain-intensity').value,
+                    painLocation: painMarkers,
+                    painCharacter: getSelected('pain-character-tags'),
+                    aura: document.querySelector('#step-3 .selected')?.dataset.value === 'yes',
+                    associatedSymptoms: getSelected('associated-symptoms-tags'),
+                    sleepQuality: getSelected('sleepQuality-tags'),
+                    sleepDuration: document.getElementById('sleep-duration').value,
+                    lmpDate: document.getElementById('lmp-date').value,
+                    triggers: [...new Set([...getSelected('triggers-tags'), ...(customTrigger ? [customTrigger] : [])])],
+                    weather: getSelected('weather-tags'),
+                    medications: [...new Set([...getSelected('medication-tags'), ...(customMedication ? [customMedication] : [])])],
+                    reliefMeasures: getSelected('relief-tags'),
+                };
+            }
+            
+            function updateIntensitySlider() {
+                const slider = document.getElementById('pain-intensity');
+                const valueEl = document.getElementById('intensity-value');
+                if (!slider || !valueEl) return;
+                const value = slider.value;
+                valueEl.textContent = value;
+                let color = value > 7 ? '#ef4444' : value > 4 ? '#f59e0b' : '#10b981';
+                slider.style.setProperty('--thumb-color', color);
+                valueEl.style.color = color;
+                renderPainMarkers();
+            }
+
+            function handlePainMarker(e) {
+                const target = e.target;
+                if (target.matches('.pain-marker')) {
+                    const markerId = target.dataset.id;
+                    painMarkers = painMarkers.filter(m => m.id != markerId);
+                    renderPainMarkers();
+                } else if (target.matches('.head-diagram-svg')) {
+                    const svg = target;
+                    const rect = svg.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    painMarkers.push({ id: Date.now(), view: svg.id.replace('head-', ''), x: x.toFixed(2), y: y.toFixed(2) });
+                    renderPainMarkers();
+                }
+            }
+
+            function renderPainMarkers() {
+                const intensity = document.getElementById('pain-intensity')?.value || 5;
+                const color = intensity > 7 ? '#ef4444' : intensity > 4 ? '#f59e0b' : '#10b981';
+                document.querySelectorAll('.head-diagram-svg').forEach(svg => {
+                    svg.querySelectorAll('.pain-marker').forEach(m => m.remove());
+                    const view = svg.id.replace('head-', '');
+                    painMarkers.filter(m => m.view === view).forEach(marker => {
+                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('class', 'pain-marker');
+                        circle.setAttribute('cx', marker.x);
+                        circle.setAttribute('cy', marker.y);
+                        circle.setAttribute('r', '5');
+                        circle.setAttribute('fill', color);
+                        circle.setAttribute('fill-opacity', '0.8');
+                        circle.setAttribute('stroke', 'white');
+                        circle.setAttribute('stroke-width', '1.5');
+                        circle.dataset.id = marker.id;
+                        svg.appendChild(circle);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
