@@ -492,49 +492,8 @@
         <!-- Migraine Calendar -->
         <div class="bg-white rounded-lg p-6 shadow-sm mb-8">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">📅 My Migraine Calendar</h3>
-            <div class="grid grid-cols-7 gap-1 text-center text-sm">
-                <!-- Calendar Header -->
-                <div class="font-semibold text-gray-600 py-2">Sun</div>
-                <div class="font-semibold text-gray-600 py-2">Mon</div>
-                <div class="font-semibold text-gray-600 py-2">Tue</div>
-                <div class="font-semibold text-gray-600 py-2">Wed</div>
-                <div class="font-semibold text-gray-600 py-2">Thu</div>
-                <div class="font-semibold text-gray-600 py-2">Fri</div>
-                <div class="font-semibold text-gray-600 py-2">Sat</div>
-                
-                <!-- Calendar Days -->
-                <div class="py-2 text-gray-400">30</div>
-                <div class="py-2 text-gray-400">31</div>
-                <div class="py-2 bg-red-100 text-red-800 rounded font-semibold">1</div>
-                <div class="py-2">2</div>
-                <div class="py-2">3</div>
-                <div class="py-2 bg-yellow-100 text-yellow-800 rounded font-semibold">4</div>
-                <div class="py-2">5</div>
-                <div class="py-2">6</div>
-                <div class="py-2">7</div>
-                <div class="py-2 bg-red-100 text-red-800 rounded font-semibold">8</div>
-                <div class="py-2">9</div>
-                <div class="py-2">10</div>
-                <div class="py-2">11</div>
-                <div class="py-2">12</div>
-                <div class="py-2">13</div>
-                <div class="py-2">14</div>
-                <div class="py-2 bg-yellow-100 text-yellow-800 rounded font-semibold">15</div>
-                <div class="py-2">16</div>
-                <div class="py-2">17</div>
-                <div class="py-2">18</div>
-                <div class="py-2">19</div>
-                <div class="py-2 bg-red-100 text-red-800 rounded font-semibold">20</div>
-                <div class="py-2">21</div>
-                <div class="py-2">22</div>
-                <div class="py-2">23</div>
-                <div class="py-2">24</div>
-                <div class="py-2">25</div>
-                <div class="py-2">26</div>
-                <div class="py-2 bg-yellow-100 text-yellow-800 rounded font-semibold">27</div>
-                <div class="py-2">28</div>
-                <div class="py-2">29</div>
-                <div class="py-2">30</div>
+            <div id="migraineCalendar">
+                <!-- Calendar will be populated by JavaScript -->
             </div>
             <div class="flex items-center justify-center space-x-6 mt-4 text-sm">
                 <div class="flex items-center">
@@ -555,19 +514,8 @@
         <!-- Trigger Analysis Report -->
         <div class="bg-white rounded-lg p-6 shadow-sm mb-8">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">🎯 Trigger Analysis Report</h3>
-            <div class="space-y-4">
-                <div class="p-4 bg-red-50 rounded-lg border-l-4 border-red-400">
-                    <p class="text-red-800 font-medium">You had 12 migraines last month. On 9 of those days (75%), the barometric pressure dropped significantly.</p>
-                </div>
-                <div class="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-400">
-                    <p class="text-orange-800 font-medium">Stress was reported as a trigger for 80% of your severe (7+) migraines.</p>
-                </div>
-                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                    <p class="text-blue-800 font-medium">Migraines are 3x more likely to occur the day after you've had less than 6 hours of sleep.</p>
-                </div>
-                <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
-                    <p class="text-purple-800 font-medium">85% of your migraines occur within 2 days of your menstrual cycle start.</p>
-                </div>
+            <div id="triggerAnalysisReport">
+                <!-- Will be populated by JavaScript with real data -->
             </div>
         </div>
 
@@ -575,65 +523,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-lg p-6 shadow-sm">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">📈 Frequency Trends</h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">This week</span>
-                        <span class="font-semibold">2 headaches</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Last week</span>
-                        <span class="font-semibold">3 headaches</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Monthly average</span>
-                        <span class="font-semibold">7.2 headaches</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Avg duration</span>
-                        <span class="font-semibold">4.5 hours</span>
-                    </div>
+                <div class="space-y-3" id="frequencyTrends">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
 
             <div class="bg-white rounded-lg p-6 shadow-sm">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">🔍 Top Triggers</h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Work Stress</span>
-                        <div class="flex items-center">
-                            <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                                <div class="bg-red-500 h-2 rounded-full" style="width: 80%"></div>
-                            </div>
-                            <span class="text-sm font-semibold">80%</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Lack of Sleep</span>
-                        <div class="flex items-center">
-                            <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                                <div class="bg-orange-500 h-2 rounded-full" style="width: 60%"></div>
-                            </div>
-                            <span class="text-sm font-semibold">60%</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Weather Change</span>
-                        <div class="flex items-center">
-                            <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 40%"></div>
-                            </div>
-                            <span class="text-sm font-semibold">40%</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Hormonal</span>
-                        <div class="flex items-center">
-                            <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                                <div class="bg-pink-500 h-2 rounded-full" style="width: 35%"></div>
-                            </div>
-                            <span class="text-sm font-semibold">35%</span>
-                        </div>
-                    </div>
+                <div class="space-y-3" id="topTriggers">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
         </div>
@@ -641,49 +539,8 @@
         <!-- Treatment Effectiveness Report -->
         <div class="bg-white rounded-lg p-6 shadow-sm mb-8">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">💊 Treatment Effectiveness Report</h3>
-            
-            <!-- Medication Effectiveness -->
-            <div class="mb-6">
-                <h4 class="font-medium text-gray-700 mb-3">Medications</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                        <div class="text-2xl font-bold text-green-600">85%</div>
-                        <div class="text-sm font-medium text-gray-700">Sumatriptan 50mg</div>
-                        <div class="text-xs text-gray-500 mt-1">Effective within 2 hours</div>
-                        <div class="text-xs text-green-600 mt-1">★★★★★ Highly Effective</div>
-                    </div>
-                    <div class="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <div class="text-2xl font-bold text-yellow-600">65%</div>
-                        <div class="text-sm font-medium text-gray-700">Ibuprofen 400mg</div>
-                        <div class="text-xs text-gray-500 mt-1">Partial relief in 3-4 hours</div>
-                        <div class="text-xs text-yellow-600 mt-1">★★★☆☆ Moderately Effective</div>
-                    </div>
-                    <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200">
-                        <div class="text-2xl font-bold text-red-600">30%</div>
-                        <div class="text-sm font-medium text-gray-700">Acetaminophen 500mg</div>
-                        <div class="text-xs text-gray-500 mt-1">Limited effectiveness</div>
-                        <div class="text-xs text-red-600 mt-1">★★☆☆☆ Low Effectiveness</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Non-Pharmacological Interventions -->
-            <div>
-                <h4 class="font-medium text-gray-700 mb-3">Non-Pharmacological Interventions</h4>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span class="text-gray-700">'Resting in a dark, quiet room' was logged as a relief measure in <strong>100%</strong> of your resolved migraines.</span>
-                        <span class="text-green-600 font-semibold">★★★★★</span>
-                    </div>
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span class="text-gray-700">Cold pack application provided relief in <strong>78%</strong> of cases when used.</span>
-                        <span class="text-green-600 font-semibold">★★★★☆</span>
-                    </div>
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span class="text-gray-700">Hydration/electrolytes helped in <strong>65%</strong> of mild to moderate migraines.</span>
-                        <span class="text-yellow-600 font-semibold">★★★☆☆</span>
-                    </div>
-                </div>
+            <div id="treatmentEffectivenessReport">
+                <!-- Will be populated by JavaScript with real data -->
             </div>
         </div>
 
@@ -830,9 +687,89 @@
         let medicationsTaken = [];
         let migraines = JSON.parse(localStorage.getItem('migraines') || '[]');
 
+        // Add sample data if no data exists
+        if (migraines.length === 0) {
+            const sampleData = [
+                {
+                    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    startTime: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+                    painLevel: 7,
+                    finalPainLevel: 2,
+                    outcome: 2,
+                    status: 'complete',
+                    locations: ['left_side', 'forehead'],
+                    triggers: ['work_stress', 'lack_sleep'],
+                    symptoms: ['nausea', 'photophobia'],
+                    medicationsTaken: [{name: 'sumatriptan', dosage: '50mg', timestamp: new Date().toISOString()}],
+                    reliefMeasures: ['dark_room', 'cold_pack'],
+                    completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    timestamp: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+                    startTime: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
+                    painLevel: 5,
+                    finalPainLevel: 3,
+                    outcome: 3,
+                    status: 'complete',
+                    locations: ['both_sides'],
+                    triggers: ['weather_change'],
+                    symptoms: ['dizziness'],
+                    medicationsTaken: [{name: 'ibuprofen', dosage: '400mg', timestamp: new Date().toISOString()}],
+                    reliefMeasures: ['hydration'],
+                    completedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    timestamp: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+                    startTime: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000),
+                    painLevel: 8,
+                    finalPainLevel: 1,
+                    outcome: 1,
+                    status: 'complete',
+                    locations: ['right_side'],
+                    triggers: ['work_stress', 'hormonal'],
+                    symptoms: ['nausea', 'vomiting', 'photophobia'],
+                    medicationsTaken: [{name: 'sumatriptan', dosage: '50mg', timestamp: new Date().toISOString()}],
+                    reliefMeasures: ['dark_room', 'heat_pack'],
+                    completedAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    timestamp: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+                    startTime: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+                    painLevel: 6,
+                    finalPainLevel: 4,
+                    outcome: 4,
+                    status: 'complete',
+                    locations: ['forehead'],
+                    triggers: ['lack_sleep'],
+                    symptoms: ['photophobia'],
+                    medicationsTaken: [{name: 'ibuprofen', dosage: '400mg', timestamp: new Date().toISOString()}],
+                    reliefMeasures: ['dark_room'],
+                    completedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    timestamp: new Date(Date.now() - 32 * 24 * 60 * 60 * 1000).toISOString(),
+                    startTime: new Date(Date.now() - 32 * 24 * 60 * 60 * 1000),
+                    painLevel: 9,
+                    finalPainLevel: 2,
+                    outcome: 2,
+                    status: 'complete',
+                    locations: ['left_side', 'behind_eyes'],
+                    triggers: ['work_stress', 'weather_change'],
+                    symptoms: ['nausea', 'vomiting', 'photophobia', 'phonophobia'],
+                    medicationsTaken: [{name: 'sumatriptan', dosage: '50mg', timestamp: new Date().toISOString()}],
+                    reliefMeasures: ['dark_room', 'cold_pack', 'hydration'],
+                    completedAt: new Date(Date.now() - 32 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+            migraines = sampleData;
+            localStorage.setItem('migraines', JSON.stringify(migraines));
+        }
+
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             updateRecentEntries();
+            updateDashboardStats();
+            updateHeroStats();
             
             // Pain slider
             const painSlider = document.getElementById('painSlider');
@@ -850,7 +787,428 @@
                     this.classList.toggle('selected');
                 });
             });
+
+            // Update stats every minute
+            setInterval(updateDashboardStats, 60000);
         });
+
+        function updateAnalyticsData() {
+            updateFrequencyTrends();
+            updateTopTriggersAnalytics();
+            generateMigraineCalendar();
+            updateTriggerAnalysisReport();
+            updateTreatmentEffectivenessReport();
+        }
+
+        function updateTriggerAnalysisReport() {
+            const container = document.getElementById('triggerAnalysisReport');
+            if (!container) return;
+
+            if (migraines.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">No migraine data available yet. Start logging your migraines to see trigger analysis.</div>';
+                return;
+            }
+
+            const now = new Date();
+            const thisMonth = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            });
+
+            const lastMonth = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                return date.getMonth() === lastMonthDate.getMonth() && date.getFullYear() === lastMonthDate.getFullYear();
+            });
+
+            // Analyze triggers
+            const triggerCounts = {};
+            const severeMigraines = migraines.filter(m => m.painLevel >= 7);
+            const severeTriggerCounts = {};
+
+            migraines.forEach(migraine => {
+                if (migraine.triggers) {
+                    migraine.triggers.forEach(trigger => {
+                        triggerCounts[trigger] = (triggerCounts[trigger] || 0) + 1;
+                        if (migraine.painLevel >= 7) {
+                            severeTriggerCounts[trigger] = (severeTriggerCounts[trigger] || 0) + 1;
+                        }
+                    });
+                }
+            });
+
+            const insights = [];
+
+            // Monthly frequency insight
+            if (thisMonth.length > 0 || lastMonth.length > 0) {
+                const monthName = now.toLocaleDateString('en-US', { month: 'long' });
+                const lastMonthName = new Date(now.getFullYear(), now.getMonth() - 1, 1).toLocaleDateString('en-US', { month: 'long' });
+                
+                if (thisMonth.length > 0) {
+                    insights.push({
+                        type: 'info',
+                        message: `You had ${thisMonth.length} migraine${thisMonth.length === 1 ? '' : 's'} in ${monthName}${lastMonth.length > 0 ? `, compared to ${lastMonth.length} in ${lastMonthName}` : ''}.`
+                    });
+                }
+            }
+
+            // Top trigger analysis
+            const topTrigger = Object.entries(triggerCounts).sort(([,a], [,b]) => b - a)[0];
+            if (topTrigger) {
+                const triggerName = topTrigger[0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const percentage = Math.round((topTrigger[1] / migraines.length) * 100);
+                insights.push({
+                    type: 'warning',
+                    message: `${triggerName} was reported as a trigger in ${topTrigger[1]} out of ${migraines.length} migraines (${percentage}% correlation).`
+                });
+            }
+
+            // Severe migraine trigger analysis
+            if (severeMigraines.length > 0) {
+                const topSevereTrigger = Object.entries(severeTriggerCounts).sort(([,a], [,b]) => b - a)[0];
+                if (topSevereTrigger) {
+                    const triggerName = topSevereTrigger[0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const percentage = Math.round((topSevereTrigger[1] / severeMigraines.length) * 100);
+                    insights.push({
+                        type: 'danger',
+                        message: `${triggerName} was present in ${percentage}% of your severe (7+) migraines.`
+                    });
+                }
+            }
+
+            // Pattern insights
+            const stressMigraines = migraines.filter(m => m.triggers && m.triggers.includes('work_stress'));
+            if (stressMigraines.length >= 2) {
+                const stressPercentage = Math.round((stressMigraines.length / migraines.length) * 100);
+                insights.push({
+                    type: 'info',
+                    message: `Work stress appears to be a factor in ${stressPercentage}% of your logged migraines. Consider stress management techniques.`
+                });
+            }
+
+            if (insights.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">Not enough data yet for detailed trigger analysis. Keep logging your migraines to see patterns emerge.</div>';
+                return;
+            }
+
+            const colorMap = {
+                'danger': 'bg-red-50 border-red-400 text-red-800',
+                'warning': 'bg-orange-50 border-orange-400 text-orange-800',
+                'info': 'bg-blue-50 border-blue-400 text-blue-800',
+                'success': 'bg-green-50 border-green-400 text-green-800'
+            };
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    ${insights.map(insight => `
+                        <div class="p-4 ${colorMap[insight.type]} rounded-lg border-l-4">
+                            <p class="font-medium">${insight.message}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function updateTreatmentEffectivenessReport() {
+            const container = document.getElementById('treatmentEffectivenessReport');
+            if (!container) return;
+
+            const migrainesWithMeds = migraines.filter(m => m.medicationsTaken && m.medicationsTaken.length > 0);
+            
+            if (migrainesWithMeds.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">No medication data available yet. Log medications taken during migraines to see effectiveness analysis.</div>';
+                return;
+            }
+
+            // Calculate medication effectiveness based on actual outcomes
+            const medStats = {};
+            migrainesWithMeds.forEach(migraine => {
+                migraine.medicationsTaken.forEach(med => {
+                    if (!medStats[med.name]) {
+                        medStats[med.name] = { total: 0, effective: 0, dosage: med.dosage };
+                    }
+                    medStats[med.name].total++;
+                    
+                    // Consider effective based on actual outcome data
+                    let wasEffective = false;
+                    
+                    if (migraine.finalPainLevel !== undefined && migraine.outcome !== undefined) {
+                        // Use actual outcome data - effective if final pain ≤ 3 or outcome ≤ 3
+                        wasEffective = migraine.finalPainLevel <= 3 || migraine.outcome <= 3;
+                    } else {
+                        // Fallback to original logic if no outcome data
+                        wasEffective = migraine.painLevel <= 3 || 
+                                     (migraine.status === 'complete' && migraine.painLevel <= 5);
+                    }
+                    
+                    if (wasEffective) {
+                        medStats[med.name].effective++;
+                    }
+                });
+            });
+
+            // Calculate relief measure effectiveness based on actual outcomes
+            const reliefStats = {};
+            const migrainesWithRelief = migraines.filter(m => m.reliefMeasures && m.reliefMeasures.length > 0);
+            
+            migrainesWithRelief.forEach(migraine => {
+                migraine.reliefMeasures.forEach(relief => {
+                    if (!reliefStats[relief]) {
+                        reliefStats[relief] = { total: 0, effective: 0 };
+                    }
+                    reliefStats[relief].total++;
+                    
+                    // Consider relief measure effective based on actual outcome data
+                    let reliefWorked = false;
+                    
+                    if (migraine.finalPainLevel !== undefined && migraine.outcome !== undefined) {
+                        // Use actual outcome data - effective if final pain ≤ 4 or outcome ≤ 4
+                        reliefWorked = migraine.finalPainLevel <= 4 || migraine.outcome <= 4;
+                    } else {
+                        // Fallback logic if no outcome data
+                        reliefWorked = migraine.painLevel <= 4 || 
+                                     migraine.status === 'complete' ||
+                                     !migraine.symptoms?.includes('vomiting');
+                    }
+                    
+                    if (reliefWorked) {
+                        reliefStats[relief].effective++;
+                    }
+                });
+            });
+
+            let html = '';
+
+            // Medication effectiveness
+            if (Object.keys(medStats).length > 0) {
+                html += `
+                    <div class="mb-6">
+                        <h4 class="font-medium text-gray-700 mb-3">Medications</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-${Math.min(3, Object.keys(medStats).length)} gap-4">
+                `;
+
+                Object.entries(medStats).forEach(([medName, stats]) => {
+                    const effectiveness = Math.round((stats.effective / stats.total) * 100);
+                    const medDisplayName = medName.charAt(0).toUpperCase() + medName.slice(1);
+                    
+                    let colorClass, rating;
+                    if (effectiveness >= 80) {
+                        colorClass = 'bg-green-50 border-green-200 text-green-600';
+                        rating = '★★★★★ Highly Effective';
+                    } else if (effectiveness >= 60) {
+                        colorClass = 'bg-yellow-50 border-yellow-200 text-yellow-600';
+                        rating = '★★★★☆ Moderately Effective';
+                    } else if (effectiveness >= 40) {
+                        colorClass = 'bg-orange-50 border-orange-200 text-orange-600';
+                        rating = '★★★☆☆ Somewhat Effective';
+                    } else {
+                        colorClass = 'bg-red-50 border-red-200 text-red-600';
+                        rating = '★★☆☆☆ Low Effectiveness';
+                    }
+
+                    html += `
+                        <div class="text-center p-4 ${colorClass} rounded-lg border">
+                            <div class="text-2xl font-bold">${effectiveness}%</div>
+                            <div class="text-sm font-medium text-gray-700">${medDisplayName} ${stats.dosage || ''}</div>
+                            <div class="text-xs text-gray-500 mt-1">Used ${stats.total} time${stats.total === 1 ? '' : 's'}</div>
+                            <div class="text-xs mt-1">${rating}</div>
+                        </div>
+                    `;
+                });
+
+                html += '</div></div>';
+            }
+
+            // Non-pharmacological interventions
+            if (Object.keys(reliefStats).length > 0) {
+                html += `
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-3">Non-Pharmacological Interventions</h4>
+                        <div class="space-y-3">
+                `;
+
+                Object.entries(reliefStats).forEach(([relief, stats]) => {
+                    const effectiveness = Math.round((stats.effective / stats.total) * 100);
+                    const reliefName = relief.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    
+                    let stars;
+                    if (effectiveness >= 80) stars = '★★★★★';
+                    else if (effectiveness >= 60) stars = '★★★★☆';
+                    else if (effectiveness >= 40) stars = '★★★☆☆';
+                    else if (effectiveness >= 20) stars = '★★☆☆☆';
+                    else stars = '★☆☆☆☆';
+
+                    const starColor = effectiveness >= 60 ? 'text-green-600' : effectiveness >= 40 ? 'text-yellow-600' : 'text-red-600';
+
+                    html += `
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-700">'${reliefName}' provided relief in <strong>${effectiveness}%</strong> of cases when used (${stats.effective}/${stats.total} times).</span>
+                            <span class="${starColor} font-semibold">${stars}</span>
+                        </div>
+                    `;
+                });
+
+                html += '</div></div>';
+            }
+
+            if (html === '') {
+                html = '<div class="text-center text-gray-500 py-8">No treatment data available yet. Log medications and relief measures to see effectiveness analysis.</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function updateFrequencyTrends() {
+            const container = document.getElementById('frequencyTrends');
+            if (!container) return;
+
+            const now = new Date();
+            const thisWeek = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                return date >= weekAgo;
+            });
+
+            const lastWeek = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                return date >= twoWeeksAgo && date < weekAgo;
+            });
+
+            const monthlyAvg = migraines.length > 0 ? 
+                (migraines.length / Math.max(1, Math.ceil((now - new Date(migraines[0].startTime)) / (1000 * 60 * 60 * 24 * 30)))).toFixed(1) : 0;
+
+            const avgDuration = migraines.length > 0 ? 
+                (migraines.reduce((sum, m) => sum + (m.duration || 4), 0) / migraines.length).toFixed(1) : 0;
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">This week</span>
+                    <span class="font-semibold">${thisWeek.length} headaches</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Last week</span>
+                    <span class="font-semibold">${lastWeek.length} headaches</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Monthly average</span>
+                    <span class="font-semibold">${monthlyAvg} headaches</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Avg duration</span>
+                    <span class="font-semibold">${avgDuration} hours</span>
+                </div>
+            `;
+        }
+
+        function updateTopTriggersAnalytics() {
+            const container = document.getElementById('topTriggers');
+            if (!container) return;
+
+            const triggerCounts = {};
+            migraines.forEach(migraine => {
+                if (migraine.triggers) {
+                    migraine.triggers.forEach(trigger => {
+                        triggerCounts[trigger] = (triggerCounts[trigger] || 0) + 1;
+                    });
+                }
+            });
+
+            const sortedTriggers = Object.entries(triggerCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 4);
+
+            if (sortedTriggers.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-4">No trigger data available yet</div>';
+                return;
+            }
+
+            const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-pink-500'];
+
+            container.innerHTML = sortedTriggers.map(([trigger, count], index) => {
+                const percentage = Math.round((count / migraines.length) * 100);
+                const triggerName = trigger.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                
+                return `
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">${triggerName}</span>
+                        <div class="flex items-center">
+                            <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                <div class="${colors[index]} h-2 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                            <span class="text-sm font-semibold">${percentage}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateMigraineCalendar() {
+            const container = document.getElementById('migraineCalendar');
+            if (!container) return;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            const migraineDays = {};
+            migraines.forEach(migraine => {
+                const date = new Date(migraine.startTime);
+                if (date.getMonth() === month && date.getFullYear() === year) {
+                    const dayKey = date.getDate();
+                    if (!migraineDays[dayKey] || migraine.painLevel > migraineDays[dayKey]) {
+                        migraineDays[dayKey] = migraine.painLevel;
+                    }
+                }
+            });
+
+            let calendarHTML = '<div class="grid grid-cols-7 gap-1 text-center text-sm">';
+            
+            // Header
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                calendarHTML += `<div class="font-semibold text-gray-600 py-2">${day}</div>`;
+            });
+
+            // Calendar days
+            const currentDate = new Date(startDate);
+            for (let week = 0; week < 6; week++) {
+                for (let day = 0; day < 7; day++) {
+                    const dayNum = currentDate.getDate();
+                    const isCurrentMonth = currentDate.getMonth() === month;
+                    const painLevel = migraineDays[dayNum];
+                    
+                    let className = 'py-2';
+                    let textClass = '';
+                    
+                    if (!isCurrentMonth) {
+                        textClass = 'text-gray-400';
+                    } else if (painLevel) {
+                        if (painLevel >= 7) {
+                            className += ' bg-red-100 text-red-800 rounded font-semibold';
+                        } else if (painLevel >= 4) {
+                            className += ' bg-yellow-100 text-yellow-800 rounded font-semibold';
+                        } else {
+                            className += ' bg-green-100 text-green-800 rounded font-semibold';
+                        }
+                    }
+                    
+                    calendarHTML += `<div class="${className} ${textClass}">${dayNum}</div>`;
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                
+                if (currentDate.getMonth() !== month) break;
+            }
+            
+            calendarHTML += '</div>';
+            container.innerHTML = calendarHTML;
+        }
 
         // View management
         function showView(viewName) {
@@ -915,6 +1273,8 @@
             
             closeQuickLog();
             updateRecentEntries();
+            updateDashboardStats();
+            updateHeroStats();
             
             // Show success message
             alert('Quick entry saved! You can add more details later when you feel better.');
@@ -1049,11 +1409,22 @@
             currentEntry.status = 'complete';
             currentEntry.completedAt = new Date().toISOString();
             
+            // Ask for outcome/resolution if medications were taken
+            if (medicationsTaken.length > 0) {
+                const outcome = prompt('How did this migraine resolve? (1-10 scale where 1=completely resolved, 10=no improvement)', '3');
+                if (outcome) {
+                    currentEntry.outcome = parseInt(outcome);
+                    currentEntry.finalPainLevel = parseInt(outcome);
+                }
+            }
+            
             migraines.push(currentEntry);
             localStorage.setItem('migraines', JSON.stringify(migraines));
             
             closeDetailedLog();
             updateRecentEntries();
+            updateDashboardStats();
+            updateHeroStats();
             
             // Show success message
             alert('Detailed entry saved! Your migraine has been logged with comprehensive information.');
@@ -1209,13 +1580,163 @@
             }).join('');
         }
 
+        function updateDashboardStats() {
+            const now = new Date();
+            const thisMonth = migraines.filter(m => {
+                const migraineDate = new Date(m.startTime);
+                return migraineDate.getMonth() === now.getMonth() && 
+                       migraineDate.getFullYear() === now.getFullYear();
+            });
+            
+            const lastMonth = migraines.filter(m => {
+                const migraineDate = new Date(m.startTime);
+                const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                return migraineDate.getMonth() === lastMonthDate.getMonth() && 
+                       migraineDate.getFullYear() === lastMonthDate.getFullYear();
+            });
+            
+            // Update monthly count
+            const monthlyCountEl = document.getElementById('monthlyCount');
+            const monthlyChangeEl = document.getElementById('monthlyChange');
+            if (monthlyCountEl) {
+                monthlyCountEl.textContent = thisMonth.length;
+                
+                if (monthlyChangeEl) {
+                    if (thisMonth.length === 0 && lastMonth.length === 0) {
+                        monthlyChangeEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>No data yet';
+                        monthlyChangeEl.className = 'text-xs text-gray-600 mt-1 flex items-center';
+                    } else if (lastMonth.length === 0) {
+                        monthlyChangeEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>First month of tracking';
+                        monthlyChangeEl.className = 'text-xs text-blue-600 mt-1 flex items-center';
+                    } else {
+                        const change = ((thisMonth.length - lastMonth.length) / lastMonth.length * 100).toFixed(0);
+                        if (change > 0) {
+                            monthlyChangeEl.innerHTML = `<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>${change}% more than last month`;
+                            monthlyChangeEl.className = 'text-xs text-red-600 mt-1 flex items-center';
+                        } else if (change < 0) {
+                            monthlyChangeEl.innerHTML = `<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>${Math.abs(change)}% less than last month`;
+                            monthlyChangeEl.className = 'text-xs text-green-600 mt-1 flex items-center';
+                        } else {
+                            monthlyChangeEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>Same as last month';
+                            monthlyChangeEl.className = 'text-xs text-gray-600 mt-1 flex items-center';
+                        }
+                    }
+                }
+            }
+            
+            // Calculate average intensity
+            const avgIntensity = thisMonth.length > 0 
+                ? (thisMonth.reduce((sum, m) => sum + m.painLevel, 0) / thisMonth.length).toFixed(1)
+                : '0.0';
+            
+            const avgIntensityEl = document.getElementById('avgIntensity');
+            const intensityDescEl = document.getElementById('intensityDescription');
+            if (avgIntensityEl) {
+                avgIntensityEl.textContent = avgIntensity;
+                
+                if (intensityDescEl) {
+                    if (avgIntensity == '0.0') {
+                        intensityDescEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>No data yet';
+                        intensityDescEl.className = 'text-xs text-gray-600 mt-1 flex items-center';
+                    } else if (avgIntensity <= 3) {
+                        intensityDescEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>Mild severity';
+                        intensityDescEl.className = 'text-xs text-green-600 mt-1 flex items-center';
+                    } else if (avgIntensity <= 6) {
+                        intensityDescEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>Moderate severity';
+                        intensityDescEl.className = 'text-xs text-yellow-600 mt-1 flex items-center';
+                    } else {
+                        intensityDescEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>High severity';
+                        intensityDescEl.className = 'text-xs text-red-600 mt-1 flex items-center';
+                    }
+                }
+            }
+            
+            // Calculate most common trigger
+            const triggerCounts = {};
+            thisMonth.forEach(migraine => {
+                if (migraine.triggers) {
+                    migraine.triggers.forEach(trigger => {
+                        triggerCounts[trigger] = (triggerCounts[trigger] || 0) + 1;
+                    });
+                }
+            });
+            
+            const topTrigger = Object.entries(triggerCounts)
+                .sort(([,a], [,b]) => b - a)[0];
+            
+            const topTriggerEl = document.getElementById('topTrigger');
+            const triggerCorrelationEl = document.getElementById('triggerCorrelation');
+            
+            if (topTriggerEl && triggerCorrelationEl) {
+                if (topTrigger) {
+                    const triggerName = topTrigger[0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const correlation = Math.round((topTrigger[1] / thisMonth.length) * 100);
+                    topTriggerEl.textContent = triggerName;
+                    triggerCorrelationEl.innerHTML = `<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>${correlation}% correlation`;
+                    triggerCorrelationEl.className = correlation > 50 ? 'text-xs text-red-600 mt-1 flex items-center' : 'text-xs text-yellow-600 mt-1 flex items-center';
+                } else {
+                    topTriggerEl.textContent = 'None';
+                    triggerCorrelationEl.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>No data yet';
+                    triggerCorrelationEl.className = 'text-xs text-gray-600 mt-1 flex items-center';
+                }
+            }
+            
+            // Update analytics sections
+            updateAnalyticsData();
+        }
+
+        function updateHeroStats() {
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            // Calculate migraine-free days
+            const recentMigraines = migraines.filter(m => new Date(m.startTime) >= sevenDaysAgo);
+            const migraineDays = new Set(recentMigraines.map(m => new Date(m.startTime).toDateString()));
+            const migraineFreedays = 7 - migraineDays.size;
+            
+            // Calculate last entry
+            const lastEntry = migraines.length > 0 ? migraines[migraines.length - 1] : null;
+            let lastEntryText = 'No entries yet';
+            
+            if (lastEntry) {
+                const daysSince = Math.floor((now - new Date(lastEntry.startTime)) / (1000 * 60 * 60 * 24));
+                if (daysSince === 0) {
+                    lastEntryText = 'Today';
+                } else if (daysSince === 1) {
+                    lastEntryText = '1 day ago';
+                } else {
+                    lastEntryText = `${daysSince} days ago`;
+                }
+            }
+            
+            // Update hero section
+            const heroStats = document.querySelector('.flex.items-center.space-x-6.text-sm');
+            if (heroStats) {
+                heroStats.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-400 rounded-full mr-2"></div>
+                        <span>${migraineFreedays} days migraine-free</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></div>
+                        <span>Last entry: ${lastEntryText}</span>
+                    </div>
+                `;
+            }
+        }
+
         // Analytics functions
         function generateDoctorReport() {
+            if (migraines.length === 0) {
+                alert('No migraine data available to generate a report. Please log some migraines first.');
+                return;
+            }
+
             // Create a comprehensive report
             const reportData = {
                 patientSummary: {
                     totalMigraines: migraines.length,
-                    averageIntensity: migraines.reduce((sum, m) => sum + m.painLevel, 0) / migraines.length,
+                    averageIntensity: migraines.length > 0 ? (migraines.reduce((sum, m) => sum + m.painLevel, 0) / migraines.length).toFixed(1) : 0,
                     mostCommonTriggers: getMostCommonTriggers(),
                     medicationEffectiveness: getMedicationEffectiveness()
                 },
@@ -1223,8 +1744,145 @@
                 generatedAt: new Date().toISOString()
             };
             
-            alert('Comprehensive PDF report generated! This professional report includes all your migraine patterns, trigger analysis, and treatment effectiveness data for your healthcare provider.');
-            console.log('Doctor Report Data:', reportData);
+            // Generate HTML content for PDF
+            const htmlContent = generateHTMLReport(reportData);
+            
+            // Create a blob with the HTML content
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            // Create download link for HTML file that can be printed as PDF
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `migraine-report-${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            // Also open in new window for immediate printing
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            
+            // Wait for content to load then trigger print
+            setTimeout(() => {
+                printWindow.print();
+            }, 1000);
+            
+            alert('Report generated! The HTML file has been downloaded and a print window opened. Use Ctrl+P or Cmd+P to save as PDF.');
+        }
+
+        function generateHTMLReport(data) {
+            const now = new Date();
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Migraine Medical Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: #333; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .stat-box { border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+        .migraine-entry { border: 1px solid #eee; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-item { padding: 5px 0; border-bottom: 1px solid #eee; }
+        @media print { body { margin: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MIGRAINE TRACKER - COMPREHENSIVE MEDICAL REPORT</h1>
+        <p>Generated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}</p>
+    </div>
+
+    <div class="section">
+        <h2>PATIENT SUMMARY</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <strong>Total Migraines Recorded:</strong> ${data.patientSummary.totalMigraines}<br>
+                <strong>Average Pain Intensity:</strong> ${data.patientSummary.averageIntensity}/10<br>
+                <strong>Report Period:</strong> ${migraines.length > 0 ? new Date(migraines[0].startTime).toLocaleDateString() : 'N/A'} - ${now.toLocaleDateString()}
+            </div>
+            <div class="stat-box">
+                <strong>Frequency Analysis:</strong><br>
+                ${getFrequencyAnalysis().replace(/\n/g, '<br>')}
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>MOST COMMON TRIGGERS</h2>
+        <ul class="trigger-list">
+            ${data.patientSummary.mostCommonTriggers.map(trigger => 
+                `<li class="trigger-item"><strong>${trigger.trigger.replace(/_/g, ' ').toUpperCase()}:</strong> ${trigger.count} occurrences (${trigger.percentage}%)</li>`
+            ).join('')}
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>MEDICATION EFFECTIVENESS</h2>
+        <ul class="trigger-list">
+            ${data.patientSummary.medicationEffectiveness.map(med => 
+                `<li class="trigger-item"><strong>${med.name.toUpperCase()}:</strong> ${med.effectiveness}% effective</li>`
+            ).join('')}
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>DETAILED MIGRAINE LOG</h2>
+        ${migraines.map((migraine, index) => `
+            <div class="migraine-entry">
+                <h3>Entry #${index + 1}</h3>
+                <p><strong>Date:</strong> ${new Date(migraine.startTime).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${new Date(migraine.startTime).toLocaleTimeString()}</p>
+                <p><strong>Pain Level:</strong> ${migraine.painLevel}/10</p>
+                <p><strong>Status:</strong> ${migraine.status}</p>
+                ${migraine.locations ? `<p><strong>Locations:</strong> ${migraine.locations.join(', ')}</p>` : ''}
+                ${migraine.triggers ? `<p><strong>Triggers:</strong> ${migraine.triggers.join(', ')}</p>` : ''}
+                ${migraine.symptoms ? `<p><strong>Symptoms:</strong> ${migraine.symptoms.join(', ')}</p>` : ''}
+                ${migraine.medicationsTaken ? `<p><strong>Medications:</strong> ${migraine.medicationsTaken.map(m => m.name).join(', ')}</p>` : ''}
+            </div>
+        `).join('')}
+    </div>
+
+    <div class="section">
+        <h2>RECOMMENDATIONS FOR HEALTHCARE PROVIDER</h2>
+        <ul>
+            <li>Review trigger patterns for potential avoidance strategies</li>
+            <li>Assess medication effectiveness and consider alternatives if needed</li>
+            <li>Monitor frequency trends for preventive treatment consideration</li>
+            <li>Evaluate correlation with hormonal cycles, sleep patterns, and stress levels</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <p><em>This report was generated by Migraine Tracker App. For questions about this data, please contact the patient directly.</em></p>
+    </div>
+</body>
+</html>
+            `;
+        }
+
+        function getFrequencyAnalysis() {
+            const now = new Date();
+            const thisMonth = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            });
+            
+            const lastMonth = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                return date.getMonth() === lastMonthDate.getMonth() && date.getFullYear() === lastMonthDate.getFullYear();
+            });
+            
+            return `This Month: ${thisMonth.length} migraines
+Last Month: ${lastMonth.length} migraines
+Monthly Average: ${(migraines.length / Math.max(1, Math.ceil((now - new Date(migraines[0]?.startTime || now)) / (1000 * 60 * 60 * 24 * 30)))).toFixed(1)} migraines`;
         }
 
         function getMostCommonTriggers() {
@@ -1281,7 +1939,132 @@
         }
 
         function emailReport() {
-            alert('Email functionality would integrate with your email client to send the report directly to your healthcare provider.');
+            if (migraines.length === 0) {
+                alert('No migraine data available to email. Please log some migraines first.');
+                return;
+            }
+
+            // Get doctor's email from user
+            const doctorEmail = prompt('Enter your doctor\'s email address:', 'doctor@example.com');
+            if (!doctorEmail) {
+                return;
+            }
+
+            const reportData = {
+                patientSummary: {
+                    totalMigraines: migraines.length,
+                    averageIntensity: migraines.length > 0 ? (migraines.reduce((sum, m) => sum + m.painLevel, 0) / migraines.length).toFixed(1) : 0,
+                    mostCommonTriggers: getMostCommonTriggers(),
+                    medicationEffectiveness: getMedicationEffectiveness()
+                },
+                migraines: migraines,
+                generatedAt: new Date().toISOString()
+            };
+
+            // Generate comprehensive email content
+            const emailContent = generateEmailContent(reportData);
+            const subject = `Migraine Medical Report - ${new Date().toLocaleDateString()}`;
+            const body = `Dear Healthcare Provider,
+
+Please find my comprehensive migraine report below. This data has been collected using a digital migraine tracking application over ${Math.ceil((new Date() - new Date(migraines[0]?.startTime || new Date())) / (1000 * 60 * 60 * 24))} days.
+
+${emailContent}
+
+I would appreciate your review of this data and any recommendations you might have for my migraine management.
+
+Best regards,
+Your Patient
+
+---
+This report was generated automatically by Migraine Tracker App on ${new Date().toLocaleString()}`;
+
+            // Create mailto link
+            const mailtoLink = `mailto:${doctorEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Try to open email client
+            try {
+                window.location.href = mailtoLink;
+                alert(`Opening your email client to send the report to ${doctorEmail}. If your email client doesn't open automatically, the report content has been copied to your clipboard.`);
+                
+                // Also copy to clipboard as backup
+                navigator.clipboard.writeText(`To: ${doctorEmail}\nSubject: ${subject}\n\n${body}`).catch(() => {
+                    console.log('Could not copy to clipboard');
+                });
+                
+            } catch (error) {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(`To: ${doctorEmail}\nSubject: ${subject}\n\n${body}`).then(() => {
+                    alert(`Email content copied to clipboard! Please paste it into your email client and send to ${doctorEmail}`);
+                }).catch(() => {
+                    // Final fallback: show in alert
+                    const shortBody = body.substring(0, 1000) + (body.length > 1000 ? '...\n\n[Report truncated - full report available in app]' : '');
+                    alert(`Please manually copy this email content and send to ${doctorEmail}:\n\nSubject: ${subject}\n\n${shortBody}`);
+                });
+            }
+        }
+
+        function generateEmailContent(reportData) {
+            const now = new Date();
+            const thisMonth = migraines.filter(m => {
+                const date = new Date(m.startTime);
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            });
+
+            let content = `
+MIGRAINE SUMMARY:
+================
+• Total Migraines Recorded: ${reportData.patientSummary.totalMigraines}
+• Average Pain Intensity: ${reportData.patientSummary.averageIntensity}/10
+• This Month: ${thisMonth.length} migraines
+• Tracking Period: ${migraines.length > 0 ? new Date(migraines[0].startTime).toLocaleDateString() : 'N/A'} - ${now.toLocaleDateString()}
+
+MOST COMMON TRIGGERS:
+====================`;
+
+            reportData.patientSummary.mostCommonTriggers.forEach((trigger, index) => {
+                content += `\n${index + 1}. ${trigger.trigger.replace(/_/g, ' ').toUpperCase()}: ${trigger.count} occurrences (${trigger.percentage}%)`;
+            });
+
+            content += `\n\nMEDICATION EFFECTIVENESS:
+========================`;
+
+            reportData.patientSummary.medicationEffectiveness.forEach(med => {
+                content += `\n• ${med.name.toUpperCase()}: ${med.effectiveness}% effective`;
+            });
+
+            content += `\n\nRECENT MIGRAINE ENTRIES:
+=======================`;
+
+            migraines.slice(-5).reverse().forEach((migraine, index) => {
+                content += `\n\nEntry ${index + 1}:
+• Date: ${new Date(migraine.startTime).toLocaleDateString()}
+• Time: ${new Date(migraine.startTime).toLocaleTimeString()}
+• Pain Level: ${migraine.painLevel}/10
+• Status: ${migraine.status}`;
+                
+                if (migraine.triggers && migraine.triggers.length > 0) {
+                    content += `\n• Triggers: ${migraine.triggers.join(', ')}`;
+                }
+                
+                if (migraine.symptoms && migraine.symptoms.length > 0) {
+                    content += `\n• Symptoms: ${migraine.symptoms.join(', ')}`;
+                }
+                
+                if (migraine.medicationsTaken && migraine.medicationsTaken.length > 0) {
+                    content += `\n• Medications: ${migraine.medicationsTaken.map(m => m.name).join(', ')}`;
+                }
+            });
+
+            content += `\n\nRECOMMENDATIONS FOR REVIEW:
+==========================
+• Please review trigger patterns for potential avoidance strategies
+• Assess current medication effectiveness and consider alternatives if needed
+• Monitor frequency trends for preventive treatment consideration
+• Evaluate correlation with hormonal cycles, sleep patterns, and stress levels
+
+For the complete interactive report with visual calendar and detailed analytics, please request the full HTML report file.`;
+
+            return content;
         }
 
         // Settings functions
@@ -1299,5 +2082,5 @@
             }
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96963185d07c849b',t:'MTc1NDIyODA3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9697f23a05c27f63',t:'MTc1NDI0NjQ1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
